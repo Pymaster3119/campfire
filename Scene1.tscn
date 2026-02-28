@@ -75,6 +75,14 @@ public partial class sceneMap : TileMap
 
 [node name="Node2D" type="Node2D" unique_id=1814127088]
 
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1507135723]
+process_mode = 4
+offset_left = -97894.0
+offset_top = -75174.0
+offset_right = 133663.0
+offset_bottom = 63711.0
+color = Color(0.5294118, 0.80784315, 0.92156863, 1)
+
 [node name="TileMap" type="TileMap" parent="." unique_id=819614900]
 tile_set = SubResource("TileSet_vrojg")
 format = 2
