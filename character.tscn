@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://8i6jlaseuvsa"]
 
 [ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://Hank.png" id="1_glpr6"]
+[ext_resource type="Script" uid="uid://de2x3tjkkgs86" path="res://HankMovement.cs" id="2_pjt0s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pjt0s"]
 size = Vector2(8, 16)
@@ -11,6 +12,7 @@ size = Vector2(8, 16)
 texture = ExtResource("1_glpr6")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1431256094]
+script = ExtResource("2_pjt0s")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=419356597]
 shape = SubResource("RectangleShape2D_pjt0s")
