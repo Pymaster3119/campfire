@@ -1,11 +1,11 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class NewScript : Node
 {
 	private Dictionary<string, int> _amounts = new();
-	
-	// Called when the node enters the scene tree for the first time.
+
 	public override void _Ready()
 	{
 		GD.Print("StorageManager READY (autoload works)");
@@ -16,14 +16,24 @@ public partial class NewScript : Node
 	{
 		return _amounts.ContainsKey(id) ? _amounts[id] : 0;
 	}
-	
+
+	public bool HasAmount(string id, int amount)
+	{
+		return GetAmount(id) >= amount;
+	}
+
 	public void Add(string id, int amount)
 	{
-		// Update the stored amount: current amount + amount added.
 		_amounts[id] = GetAmount(id) + amount;
-
-		// Print to Output so we can see it updating.
 		GD.Print($"Added {amount} {id}. Now: {_amounts[id]}");
 	}
-	
+
+	public bool Remove(string id, int amount)
+	{
+		if (!HasAmount(id, amount))
+			return false;
+		_amounts[id] -= amount;
+		GD.Print($"Removed {amount} {id}. Now: {_amounts[id]}");
+		return true;
+	}
 }

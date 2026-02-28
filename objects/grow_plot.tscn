@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://objects/GrowPlot.cs" id="1_plot"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
+size = Vector2(8, 8)
+
+[node name="GrowPlot" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_plot")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.6, 0.4, 0.2, 1)
+scale = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_plot")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -16.0
+offset_top = -14.0
+offset_right = 16.0
+offset_bottom = -2.0
+horizontal_alignment = 1
+text = "[E] Plant"
