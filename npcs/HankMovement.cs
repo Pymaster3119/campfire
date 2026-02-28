@@ -19,7 +19,6 @@ public partial class HankMovement : Node2D
 
 	private const int TILE_SIZE = 8;
 	private const int HANK_HALF_HEIGHT = 8; 
-	// A tiny value to prevent boundary rounding errors
 	private const float EPSILON = 0.1f; 
 
 	public override void _Ready()
@@ -30,6 +29,9 @@ public partial class HankMovement : Node2D
 		BuildGraph();
 	}
 
+	// ------------------------------
+	// TILE RULES
+	// ------------------------------
 	private bool IsFloorTile(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
@@ -45,6 +47,22 @@ public partial class HankMovement : Node2D
 		return atlas.X <= 3;
 	}
 
+	private float GetSurfaceOffsetFromTop(Vector2I cell)
+	{
+		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
+		
+		// If it's a floor obstacle, the surface is 1px from the BOTTOM.
+		// In an 8px tile, that is 7px down from the TOP.
+		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 
+			return 7.0f; 
+		
+		// For Grass or anything else, the surface is the TOP edge (0px from top).
+		return 0.0f;
+	}
+
+	// ------------------------------
+	// GRAPH BUILD
+	// ------------------------------
 	private void BuildGraph()
 	{
 		_cellToId.Clear();
@@ -53,22 +71,28 @@ public partial class HankMovement : Node2D
 
 		foreach (Vector2I cell in tileMap.GetUsedCells(0))
 		{
-			bool hasFloor = IsFloorTile(cell);
-			bool hasLadder = IsLadderTile(cell);
+			bool isFloor = IsFloorTile(cell);
+			bool isLadder = IsLadderTile(cell);
 
-			if (!hasFloor && !hasLadder) continue;
+			// SURFACE RULE: Only create a node if this is the topmost floor tile.
+			bool isSurface = isFloor && !IsFloorTile(cell + Vector2I.Up);
+
+			if (!isSurface && !isLadder) continue;
 
 			int id = _idCounter++;
 			_cellToId[cell] = id;
 
-			Vector2 worldPos = tileMap.MapToLocal(cell);
-			
-			// We subtract EPSILON here. 
-			// This places the pathfinding point 0.1 pixels above the floor.
-			// This prevents Hank from "sinking" to reach a point exactly on the boundary.
-			worldPos.Y += (TILE_SIZE / 2f) - HANK_HALF_HEIGHT - EPSILON;
+			Vector2 tileCenter = tileMap.MapToLocal(cell);
+			float topToSurface = GetSurfaceOffsetFromTop(cell);
 
-			_astar.AddPoint(id, worldPos);
+			// NEW MATH: 
+			// 1. Find the top of the tile (Center - 4)
+			// 2. Add the offset to reach the visual floor
+			// 3. Subtract Hank's half-height to place his center
+			float topOfTile = tileCenter.Y - (TILE_SIZE / 2f);
+			float standingY = topOfTile + topToSurface - HANK_HALF_HEIGHT - EPSILON;
+
+			_astar.AddPoint(id, new Vector2(tileCenter.X, standingY));
 		}
 
 		foreach (var pair in _cellToId)
@@ -85,21 +109,67 @@ public partial class HankMovement : Node2D
 			if (!_cellToId.ContainsKey(neighbor)) continue;
 
 			bool allow = false;
-			if ((dir == Vector2I.Left || dir == Vector2I.Right) &&
-				(IsFloorTile(cell) || IsLadderTile(cell)) &&
-				(IsFloorTile(neighbor) || IsLadderTile(neighbor)))
-			{
+			if (dir == Vector2I.Left || dir == Vector2I.Right)
 				allow = true;
-			}
 
 			if ((dir == Vector2I.Up || dir == Vector2I.Down) &&
 				IsLadderTile(cell) && IsLadderTile(neighbor))
-			{
 				allow = true;
-			}
 
-			if (allow)
-				_astar.ConnectPoints(id, _cellToId[neighbor], true);
+			if (allow) _astar.ConnectPoints(id, _cellToId[neighbor], true);
+		}
+	}
+
+	// ------------------------------
+	// MOVEMENT & SNAPPING
+	// ------------------------------
+	public override void _Process(double delta)
+	{
+		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
+		{
+			if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
+			return;
+		}
+
+		Vector2 target = _currentPath[_pathIndex];
+		float speed = IsCurrentlyOnLadder() ? ClimbSpeed : MoveSpeed;
+
+		GlobalPosition = GlobalPosition.MoveToward(target, speed * (float)delta);
+
+		if (GlobalPosition.DistanceTo(target) < 0.1f) _pathIndex++;
+
+		if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
+
+		hankPosition = GlobalPosition;
+	}
+
+	private bool IsCurrentlyOnLadder()
+	{
+		Vector2I cell = tileMap.LocalToMap(GlobalPosition);
+		return IsLadderTile(cell);
+	}
+
+	private void ApplyFloorSnap()
+	{
+		// Probe 1px below where his feet should be
+		Vector2 probePos = GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT + 1f);
+		Vector2I cell = tileMap.LocalToMap(probePos);
+
+		// If we are currently "inside" a floor stack, look UP for the surface.
+		while (IsFloorTile(cell) && IsFloorTile(cell + Vector2I.Up))
+		{
+			cell += Vector2I.Up;
+		}
+
+		if (IsFloorTile(cell))
+		{
+			Vector2 tileCenter = tileMap.MapToLocal(cell);
+			float topToSurface = GetSurfaceOffsetFromTop(cell);
+			
+			float topOfTile = tileCenter.Y - (TILE_SIZE / 2f);
+			float floorY = topOfTile + topToSurface;
+			
+			GlobalPosition = new Vector2(GlobalPosition.X, floorY - HANK_HALF_HEIGHT - EPSILON);
 		}
 	}
 
@@ -116,58 +186,6 @@ public partial class HankMovement : Node2D
 				_currentPath = _astar.GetPointPath(startId, endId);
 				_pathIndex = 0;
 			}
-		}
-	}
-
-	public override void _Process(double delta)
-	{
-		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
-		{
-			if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
-			return;
-		}
-
-		Vector2 target = _currentPath[_pathIndex];
-		float speed = IsCurrentlyOnLadder() ? ClimbSpeed : MoveSpeed;
-
-		Vector2 newPos = GlobalPosition.MoveToward(target, speed * (float)delta);
-		GlobalPosition = newPos;
-
-		if (GlobalPosition.DistanceTo(target) < 0.1f)
-		{
-			_pathIndex++;
-		}
-
-		if (!IsCurrentlyOnLadder())
-		{
-			ApplyFloorSnap();
-		}
-
-		hankPosition = GlobalPosition;
-	}
-
-	private bool IsCurrentlyOnLadder()
-	{
-		// Sample from the center of Hank
-		Vector2I cell = tileMap.LocalToMap(GlobalPosition);
-		return IsLadderTile(cell);
-	}
-
-	private void ApplyFloorSnap()
-	{
-		// IMPORTANT: We check 1 pixel BELOW the feet to ensure we find the actual floor tile,
-		// not the tile Hank is currently standing in.
-		Vector2 probePos = GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT + 1f);
-		Vector2I cellBelow = tileMap.LocalToMap(probePos);
-
-		if (IsFloorTile(cellBelow))
-		{
-			Vector2 tileCenter = tileMap.MapToLocal(cellBelow);
-			float floorY = tileCenter.Y - (TILE_SIZE / 2f);
-			
-			// Stay EPSILON above the floor so the next frame's 'probePos' 
-			// doesn't accidentally sample the wrong tile.
-			GlobalPosition = new Vector2(GlobalPosition.X, floorY - HANK_HALF_HEIGHT - EPSILON);
 		}
 	}
 }
