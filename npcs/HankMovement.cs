@@ -1,131 +1,173 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public partial class HankMovement : CharacterBody2D
+public partial class HankMovement : Node2D
 {
+	[Export] public TileMap tileMap;
 	[Export] public float MoveSpeed = 60f;
-	[Export] public float Gravity = 300f;
-	[Export] public float ClimbSpeed = 50f;
-	[Export] public float JumpForce = 130f;
+	[Export] public float ClimbSpeed = 60f;
+
 	public static Vector2 hankPosition;
 
-	private TileMap _tileMap;
-	private float _yVelocity = 0f;
-	private bool _jumpRequested = false;
+	private AStar2D _astar = new AStar2D();
+	private Dictionary<Vector2I, int> _cellToId = new();
+	private int _idCounter = 0;
+
+	private Vector2[] _currentPath = Array.Empty<Vector2>();
+	private int _pathIndex = 0;
 
 	private const int TILE_SIZE = 8;
+	private const int HANK_HALF_HEIGHT = 8; 
+	// A tiny value to prevent boundary rounding errors
+	private const float EPSILON = 0.1f; 
 
 	public override void _Ready()
 	{
-		_tileMap = GetTree().CurrentScene.GetNode<TileMap>("TileMap");
+		if (tileMap == null)
+			tileMap = GetTree().CurrentScene.GetNodeOrNull<TileMap>("TileMap");
+		
+		BuildGraph();
+	}
+
+	private bool IsFloorTile(Vector2I cell)
+	{
+		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
+		if (atlas == new Vector2I(-1, -1)) return false;
+		if (atlas == new Vector2I(8, 1)) return true; // Grass
+		return atlas.Y > 1; // Floor Obstacles
+	}
+
+	private bool IsLadderTile(Vector2I cell)
+	{
+		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
+		if (atlas == new Vector2I(-1, -1)) return false;
+		return atlas.X <= 3;
+	}
+
+	private void BuildGraph()
+	{
+		_cellToId.Clear();
+		_astar.Clear();
+		_idCounter = 0;
+
+		foreach (Vector2I cell in tileMap.GetUsedCells(0))
+		{
+			bool hasFloor = IsFloorTile(cell);
+			bool hasLadder = IsLadderTile(cell);
+
+			if (!hasFloor && !hasLadder) continue;
+
+			int id = _idCounter++;
+			_cellToId[cell] = id;
+
+			Vector2 worldPos = tileMap.MapToLocal(cell);
+			
+			// We subtract EPSILON here. 
+			// This places the pathfinding point 0.1 pixels above the floor.
+			// This prevents Hank from "sinking" to reach a point exactly on the boundary.
+			worldPos.Y += (TILE_SIZE / 2f) - HANK_HALF_HEIGHT - EPSILON;
+
+			_astar.AddPoint(id, worldPos);
+		}
+
+		foreach (var pair in _cellToId)
+			ConnectNeighbors(pair.Key, pair.Value);
+	}
+
+	private void ConnectNeighbors(Vector2I cell, int id)
+	{
+		Vector2I[] directions = { Vector2I.Left, Vector2I.Right, Vector2I.Up, Vector2I.Down };
+
+		foreach (var dir in directions)
+		{
+			Vector2I neighbor = cell + dir;
+			if (!_cellToId.ContainsKey(neighbor)) continue;
+
+			bool allow = false;
+			if ((dir == Vector2I.Left || dir == Vector2I.Right) &&
+				(IsFloorTile(cell) || IsLadderTile(cell)) &&
+				(IsFloorTile(neighbor) || IsLadderTile(neighbor)))
+			{
+				allow = true;
+			}
+
+			if ((dir == Vector2I.Up || dir == Vector2I.Down) &&
+				IsLadderTile(cell) && IsLadderTile(neighbor))
+			{
+				allow = true;
+			}
+
+			if (allow)
+				_astar.ConnectPoints(id, _cellToId[neighbor], true);
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo && keyEvent.Keycode == Key.W)
+		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
 		{
-			if (IsOnSolidGround() && !IsOnLadder())
-				_jumpRequested = true;
+			Vector2 clickPos = GetGlobalMousePosition();
+			long startId = _astar.GetClosestPoint(GlobalPosition);
+			long endId = _astar.GetClosestPoint(clickPos);
+
+			if (_astar.HasPoint(startId) && _astar.HasPoint(endId))
+			{
+				_currentPath = _astar.GetPointPath(startId, endId);
+				_pathIndex = 0;
+			}
 		}
 	}
 
-	public override void _PhysicsProcess(double delta)
+	public override void _Process(double delta)
 	{
-		float dt = (float)delta;
-		bool onLadder = IsOnLadder();
-		bool onFloor = IsOnSolidGround();
-
-		// ── Horizontal ──
-		float inputX = 0f;
-		if (Input.IsKeyPressed(Key.A)) inputX -= 1f;
-		if (Input.IsKeyPressed(Key.D)) inputX += 1f;
-
-		if (inputX != 0f)
+		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
 		{
-			float newX = GlobalPosition.X + inputX * MoveSpeed * dt;
-			if (!IsSolidAt(new Vector2(newX + inputX * 4f, GlobalPosition.Y))
-			 && !IsSolidAt(new Vector2(newX + inputX * 4f, GlobalPosition.Y - 6f)))
-			{
-				GlobalPosition = new Vector2(newX, GlobalPosition.Y);
-			}
+			if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
+			return;
 		}
 
-		// ── Vertical ──
-		if (onLadder && (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.S)))
-		{
-			_yVelocity = 0f;
-			float inputY = 0f;
-			if (Input.IsKeyPressed(Key.W)) inputY -= 1f;
-			if (Input.IsKeyPressed(Key.S)) inputY += 1f;
-			GlobalPosition += new Vector2(0, inputY * ClimbSpeed * dt);
-		}
-		else
-		{
-			if (onFloor)
-			{
-				if (_yVelocity > 0f)
-				{
-					_yVelocity = 0f;
-					SnapToFloor();
-				}
-				if (_jumpRequested)
-				{
-					_yVelocity = -JumpForce;
-					_jumpRequested = false;
-				}
-			}
-			else
-			{
-				_yVelocity += Gravity * dt;
-				_jumpRequested = false;
-			}
+		Vector2 target = _currentPath[_pathIndex];
+		float speed = IsCurrentlyOnLadder() ? ClimbSpeed : MoveSpeed;
 
-			GlobalPosition += new Vector2(0, _yVelocity * dt);
+		Vector2 newPos = GlobalPosition.MoveToward(target, speed * (float)delta);
+		GlobalPosition = newPos;
+
+		if (GlobalPosition.DistanceTo(target) < 0.1f)
+		{
+			_pathIndex++;
+		}
+
+		if (!IsCurrentlyOnLadder())
+		{
+			ApplyFloorSnap();
 		}
 
 		hankPosition = GlobalPosition;
 	}
 
-	// ── Tile checks ──
-
-	private bool IsOnLadder()
+	private bool IsCurrentlyOnLadder()
 	{
-		Vector2I cell = _tileMap.LocalToMap(GlobalPosition);
+		// Sample from the center of Hank
+		Vector2I cell = tileMap.LocalToMap(GlobalPosition);
 		return IsLadderTile(cell);
 	}
 
-	private bool IsOnSolidGround()
+	private void ApplyFloorSnap()
 	{
-		Vector2 feetPos = GlobalPosition + new Vector2(0, 4f);
-		Vector2I cellBelow = _tileMap.LocalToMap(feetPos);
-		return IsFloorTile(cellBelow);
-	}
+		// IMPORTANT: We check 1 pixel BELOW the feet to ensure we find the actual floor tile,
+		// not the tile Hank is currently standing in.
+		Vector2 probePos = GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT + 1f);
+		Vector2I cellBelow = tileMap.LocalToMap(probePos);
 
-	private bool IsSolidAt(Vector2 worldPos)
-	{
-		Vector2I cell = _tileMap.LocalToMap(worldPos);
-		return IsFloorTile(cell);
-	}
-
-	private bool IsFloorTile(Vector2I cell)
-	{
-		Vector2I atlas = _tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas == new Vector2I(-1, -1)) return false;
-		return atlas.Y <= 1;
-	}
-
-	private bool IsLadderTile(Vector2I cell)
-	{
-		Vector2I atlas = _tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas == new Vector2I(-1, -1)) return false;
-		return atlas.X <= 3;
-	}
-
-	private void SnapToFloor()
-	{
-		Vector2 feetPos = GlobalPosition + new Vector2(0, 4f);
-		Vector2I cell = _tileMap.LocalToMap(feetPos);
-		Vector2 tileCenter = _tileMap.MapToLocal(cell);
-		GlobalPosition = new Vector2(GlobalPosition.X, tileCenter.Y - 4f);
+		if (IsFloorTile(cellBelow))
+		{
+			Vector2 tileCenter = tileMap.MapToLocal(cellBelow);
+			float floorY = tileCenter.Y - (TILE_SIZE / 2f);
+			
+			// Stay EPSILON above the floor so the next frame's 'probePos' 
+			// doesn't accidentally sample the wrong tile.
+			GlobalPosition = new Vector2(GlobalPosition.X, floorY - HANK_HALF_HEIGHT - EPSILON);
+		}
 	}
 }

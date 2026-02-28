@@ -3,16 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://assets/Hank.png" id="1_glpr6"]
 [ext_resource type="Script" uid="uid://puccacyl22h1" path="res://npcs/HankMovement.cs" id="2_pjt0s"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pjt0s"]
-size = Vector2(8, 16)
-
-[node name="Hank" type="CharacterBody2D" unique_id=27844959]
+[node name="Node2D" type="Node2D" unique_id=2105058230]
 script = ExtResource("2_pjt0s")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2085501431]
 texture = ExtResource("1_glpr6")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1)
-shape = SubResource("RectangleShape2D_pjt0s")
