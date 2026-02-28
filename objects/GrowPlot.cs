@@ -61,11 +61,11 @@ public partial class GrowPlot : Area2D
 
 		var storage = GetNode<NewScript>("/root/Storage");
 
-		switch (keyEvent.Keycode)
+		if (keyEvent.Keycode == Key.E)
 		{
-			case Key.E:
-				if (_state == State.Empty)
-				{
+			switch (_state)
+			{
+				case State.Empty:
 					if (storage.Remove("seed", 1))
 					{
 						_state = State.Growing;
@@ -76,25 +76,25 @@ public partial class GrowPlot : Area2D
 					}
 					else
 						GD.Print("No seeds!");
-				}
-				else if (_state == State.Ready)
-				{
+					break;
+
+				case State.Growing:
+					if (!_watered)
+					{
+						_watered = true;
+						GD.Print("Watered the plot! Growing faster.");
+						UpdateDisplay();
+					}
+					break;
+
+				case State.Ready:
 					storage.Add("food", 2);
 					_state = State.Empty;
 					_watered = false;
 					UpdateDisplay();
 					GD.Print("Harvested food!");
-				}
-				break;
-
-			case Key.W:
-				if (_state == State.Growing && !_watered)
-				{
-					_watered = true;
-					GD.Print("Watered the plot! Growing faster.");
-					UpdateDisplay();
-				}
-				break;
+					break;
+			}
 		}
 	}
 
@@ -107,7 +107,7 @@ public partial class GrowPlot : Area2D
 				_sprite.Modulate = new Color(0.6f, 0.4f, 0.2f);
 				break;
 			case State.Growing:
-				_label.Text = _watered ? "Growing ~" : "[W] Water";
+				_label.Text = _watered ? "Growing ~" : "[E] Water";
 				_sprite.Modulate = new Color(0.4f, 0.7f, 0.3f);
 				break;
 			case State.Ready:

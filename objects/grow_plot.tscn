@@ -6,7 +6,6 @@
 size = Vector2(8, 8)
 
 [node name="GrowPlot" type="Area2D"]
-collision_mask = 2
 script = ExtResource("1_plot")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

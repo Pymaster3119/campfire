@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://derhsxylbb6do" path="res://assets/StoneTile.png" id="1_wpdt7"]
 [ext_resource type="Texture2D" uid="uid://by65t5c4fg4ml" path="res://assets/tiles.png" id="2_x3g6e"]
 [ext_resource type="PackedScene" uid="uid://8i6jlaseuvsa" path="res://character.tscn" id="3_30lbi"]
+[ext_resource type="Script" path="res://objects/BuildSystem.cs" id="4_build"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x3g6e"]
 texture = ExtResource("1_wpdt7")
@@ -85,3 +86,6 @@ position = Vector2(36, -1)
 
 [node name="Camera2D" type="Camera2D" parent="Hank" unique_id=1174105478]
 zoom = Vector2(4, 4)
+
+[node name="BuildSystem" type="Node2D" parent="."]
+script = ExtResource("4_build")
