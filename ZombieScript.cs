@@ -1,31 +1,16 @@
 using Godot;
 using System;
 
-public partial class HankMovement : CharacterBody2D
+public partial class ZombieScript : CharacterBody2D
 {
 	[Export]
 	public float Speed { get; set; } = 300.0f;
-	public static Vector2 hankPosition;
 
 	private Vector2 _targetPosition = Vector2.Zero;
 
-	public override void _Ready()
-	{
-		hankPosition = GlobalPosition;
-		_targetPosition = GlobalPosition;
-	}
-
-	public override void _Input(InputEvent @event)
-	{
-		if (@event.IsActionPressed("click"))
-		{
-			_targetPosition = GetGlobalMousePosition();
-		}
-	}
-
 	public override void _PhysicsProcess(double delta)
 	{
-		hankPosition = GlobalPosition;
+		_targetPosition = HankMovement.hankPosition;
 		Vector2 direction;
 		if (ladder())
 		{
