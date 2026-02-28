@@ -1,9 +1,16 @@
 [gd_scene format=3 uid="uid://8i6jlaseuvsa"]
 
+[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://Hank.png" id="1_glpr6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pjt0s"]
+size = Vector2(8, 16)
+
 [node name="Node2D" type="Node2D" unique_id=27844959]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2135193011]
+texture = ExtResource("1_glpr6")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1431256094]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=419356597]
+shape = SubResource("RectangleShape2D_pjt0s")
