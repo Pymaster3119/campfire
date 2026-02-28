@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://c3hjp0s58bct1"]
+
+[ext_resource type="Texture2D" uid="uid://dfx3dlwm87row" path="res://assets/CrateTile.png" id="1_0e48y"]
+[ext_resource type="Script" uid="uid://cona8eg2wfu3c" path="res://CrateTile.cs" id="2_epypp"]
+
+[node name="Node2D" type="Node2D" unique_id=1590946629]
+
+[node name="CrateTile" type="Sprite2D" parent="." unique_id=296845781]
+position = Vector2(4, -4)
+texture = ExtResource("1_0e48y")
+script = ExtResource("2_epypp")

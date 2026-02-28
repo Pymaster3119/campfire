@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cs78xa3odqfej"]
 
-[ext_resource type="Texture2D" uid="uid://derhsxylbb6do" path="res://StoneTile.png" id="1_wpdt7"]
-[ext_resource type="Texture2D" uid="uid://by65t5c4fg4ml" path="res://tiles.png" id="2_x3g6e"]
+[ext_resource type="Texture2D" uid="uid://derhsxylbb6do" path="res://assets/StoneTile.png" id="1_wpdt7"]
+[ext_resource type="Texture2D" uid="uid://by65t5c4fg4ml" path="res://assets/tiles.png" id="2_x3g6e"]
 [ext_resource type="PackedScene" uid="uid://8i6jlaseuvsa" path="res://character.tscn" id="3_30lbi"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x3g6e"]

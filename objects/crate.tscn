@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://csr6y5qusjlrj"]
+
+[ext_resource type="Texture2D" uid="uid://dfx3dlwm87row" path="res://assets/CrateTile.png" id="1_uep05"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mo0jf"]
+size = Vector2(8, 8)
+
+[node name="Crate" type="Area2D" unique_id=1462512865]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=636804522]
+texture = ExtResource("1_uep05")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=626450123]
+shape = SubResource("RectangleShape2D_mo0jf")
+
+[node name="Label" type="Label" parent="." unique_id=1338542068]
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 19.0
