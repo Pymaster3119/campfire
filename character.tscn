@@ -8,11 +8,11 @@ size = Vector2(8, 16)
 
 [node name="Node2D" type="Node2D" unique_id=27844959]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2135193011]
-texture = ExtResource("1_glpr6")
-
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1431256094]
 script = ExtResource("2_pjt0s")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=2135193011]
+texture = ExtResource("1_glpr6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=419356597]
 shape = SubResource("RectangleShape2D_pjt0s")
