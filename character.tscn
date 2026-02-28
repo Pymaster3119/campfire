@@ -1,18 +1,20 @@
 [gd_scene format=3 uid="uid://8i6jlaseuvsa"]
 
-[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://Hank.png" id="1_glpr6"]
-[ext_resource type="Script" uid="uid://de2x3tjkkgs86" path="res://HankMovement.cs" id="2_pjt0s"]
+[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://assets/Hank.png" id="1_glpr6"]
+[ext_resource type="Script" uid="uid://puccacyl22h1" path="res://npcs/HankMovement.cs" id="2_pjt0s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pjt0s"]
 size = Vector2(8, 16)
 
-[node name="Node2D" type="Node2D" unique_id=27844959]
+[node name="Hank" type="Node2D" unique_id=27844959]
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1431256094]
 script = ExtResource("2_pjt0s")
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=2135193011]
+position = Vector2(0, 1)
 texture = ExtResource("1_glpr6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=419356597]
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_pjt0s")
