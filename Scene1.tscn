@@ -16,3 +16,4 @@ sources/0 = SubResource("TileSetAtlasSource_x3g6e")
 [node name="TileMap" type="TileMap" parent="." unique_id=819614900]
 tile_set = SubResource("TileSet_vrojg")
 format = 2
+layer_0/tile_data = PackedInt32Array(-327684, 0, 0, -262148, 0, 0, -196612, 0, 0, -196611, 0, 0, -262147, 0, 0, -327683, 0, 0, -327682, 0, 0, -262146, 0, 0, -196610, 0, 0, -196609, 0, 0, -262145, 0, 0, -327681, 0, 0)
