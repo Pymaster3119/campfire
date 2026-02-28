@@ -83,3 +83,4 @@ script = SubResource("CSharpScript_30lbi")
 [node name="Hank" parent="." unique_id=27844959 instance=ExtResource("3_30lbi")]
 
 [node name="Camera2D" type="Camera2D" parent="Hank" unique_id=1174105478]
+zoom = Vector2(4, 4)

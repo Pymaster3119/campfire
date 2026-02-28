@@ -29,7 +29,7 @@ public partial class HankMovement : CharacterBody2D
 	{
 		hankPosition = GlobalPosition;
 		Vector2 direction;
-		if (ladder())
+		if (System.Math.Abs(_targetPosition[1] - GlobalPosition[1]) > 5f && ladder())
 		{
 			direction = new Vector2(0, 1) * GlobalPosition.DirectionTo(_targetPosition);
 		}
@@ -52,8 +52,9 @@ public partial class HankMovement : CharacterBody2D
 	{
 		scene = GetTree().CurrentScene.GetNode<TileMap>("TileMap");
 		Vector2 localPosition = scene.ToLocal(GlobalPosition);
+		localPosition = new Vector2((float)Math.Floor(localPosition[0]),(float)Math.Floor(localPosition[1])-6);
 		Vector2I mapCoords = scene.LocalToMap(localPosition);
-		int layer = 0; // Assuming layer 0, adjust as needed.
+		int layer = 0;
 		int sourceId = scene.GetCellSourceId(layer, mapCoords);
 		Vector2I atlasCoords = scene.GetCellAtlasCoords(layer, mapCoords);
 		int alternativeTile = scene.GetCellAlternativeTile(layer, mapCoords);
@@ -66,9 +67,22 @@ public partial class HankMovement : CharacterBody2D
 				return true;
 			}
 		}
-		else
+		
+		localPosition = scene.ToLocal(GlobalPosition);
+		localPosition = new Vector2((float)Math.Floor(localPosition[0]),(float)Math.Floor(localPosition[1])+7);
+		mapCoords = scene.LocalToMap(localPosition);
+		layer = 0;
+		sourceId = scene.GetCellSourceId(layer, mapCoords);
+		atlasCoords = scene.GetCellAtlasCoords(layer, mapCoords);
+		alternativeTile = scene.GetCellAlternativeTile(layer, mapCoords);
+		tileData = scene.GetCellTileData(layer, mapCoords);
+
+		if (sourceId != -1)
 		{
-			GD.Print($"No tile found at map coordinates: {mapCoords}");
+			if (atlasCoords[0] <=3)
+			{
+				return true;
+			}
 		}
 		return false;
 	}
