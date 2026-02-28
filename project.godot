@@ -15,6 +15,10 @@ run/main_scene="uid://cs78xa3odqfej"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://assets/icon.svg"
 
+[autoload]
+
+Storage="*uid://6qmko3p11etl"
+
 [dotnet]
 
 project/assembly_name="CampfireGame"
