@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://objects/turret.tscn" id="1_turret"]
+[ext_resource type="PackedScene" path="res://npcs/zombie.tscn" id="2_zombie"]
+[ext_resource type="Script" path="res://test/TurretTestDriver.cs" id="3_driver"]
+
+[node name="TurretTest" type="Node2D"]
+script = ExtResource("3_driver")
+
+[node name="Turret" parent="." instance=ExtResource("1_turret")]
+position = Vector2(100, 100)
+
+[node name="Zombie1" parent="." instance=ExtResource("2_zombie")]
+position = Vector2(200, 100)
+
+[node name="Zombie2" parent="." instance=ExtResource("2_zombie")]
+position = Vector2(50, 150)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 300.0
+offset_bottom = 30.0
+text = "Turret Test - U to upgrade, watch zombies die"
