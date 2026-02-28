@@ -46,6 +46,10 @@ public partial class HankMovement : CharacterBody2D
 		{
 			Velocity = direction * Speed;
 		}
+		if (!ladder() && !ground())
+		{
+			Velocity = new Vector2(0,1) * Speed;
+		}
 		MoveAndSlide();
 	}
 	public bool ladder()
@@ -80,6 +84,28 @@ public partial class HankMovement : CharacterBody2D
 		if (sourceId != -1)
 		{
 			if (atlasCoords[0] <=3)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public bool ground()
+	{
+		scene = GetTree().CurrentScene.GetNode<TileMap>("TileMap");
+		Vector2 localPosition = scene.ToLocal(GlobalPosition);
+		localPosition = new Vector2((float)Math.Floor(localPosition[0]),(float)Math.Floor(localPosition[1])-6);
+		Vector2I mapCoords = scene.LocalToMap(localPosition);
+		int layer = 0;
+		int sourceId = scene.GetCellSourceId(layer, mapCoords);
+		Vector2I atlasCoords = scene.GetCellAtlasCoords(layer, mapCoords);
+		int alternativeTile = scene.GetCellAlternativeTile(layer, mapCoords);
+		TileData tileData = scene.GetCellTileData(layer, mapCoords);
+
+		if (sourceId != -1)
+		{
+			if (atlasCoords[1] <=2 && System.Math.Abs(GlobalPosition[1] - mapCoords[1]) < 2f)
 			{
 				return true;
 			}
