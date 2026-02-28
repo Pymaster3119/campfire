@@ -29,9 +29,6 @@ public partial class HankMovement : Node2D
 		BuildGraph();
 	}
 
-	// ------------------------------
-	// TILE RULES
-	// ------------------------------
 	private bool IsFloorTile(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
@@ -51,18 +48,12 @@ public partial class HankMovement : Node2D
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
 		
-		// If it's a floor obstacle, the surface is 1px from the BOTTOM.
-		// In an 8px tile, that is 7px down from the TOP.
 		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 
 			return 7.0f; 
 		
-		// For Grass or anything else, the surface is the TOP edge (0px from top).
 		return 0.0f;
 	}
 
-	// ------------------------------
-	// GRAPH BUILD
-	// ------------------------------
 	private void BuildGraph()
 	{
 		_cellToId.Clear();
@@ -74,7 +65,6 @@ public partial class HankMovement : Node2D
 			bool isFloor = IsFloorTile(cell);
 			bool isLadder = IsLadderTile(cell);
 
-			// SURFACE RULE: Only create a node if this is the topmost floor tile.
 			bool isSurface = isFloor && !IsFloorTile(cell + Vector2I.Up);
 
 			if (!isSurface && !isLadder) continue;
@@ -85,10 +75,6 @@ public partial class HankMovement : Node2D
 			Vector2 tileCenter = tileMap.MapToLocal(cell);
 			float topToSurface = GetSurfaceOffsetFromTop(cell);
 
-			// NEW MATH: 
-			// 1. Find the top of the tile (Center - 4)
-			// 2. Add the offset to reach the visual floor
-			// 3. Subtract Hank's half-height to place his center
 			float topOfTile = tileCenter.Y - (TILE_SIZE / 2f);
 			float standingY = topOfTile + topToSurface - HANK_HALF_HEIGHT - EPSILON;
 
@@ -120,9 +106,6 @@ public partial class HankMovement : Node2D
 		}
 	}
 
-	// ------------------------------
-	// MOVEMENT & SNAPPING
-	// ------------------------------
 	public override void _Process(double delta)
 	{
 		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
