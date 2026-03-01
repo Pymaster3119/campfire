@@ -63,10 +63,11 @@ public partial class HankMovement : Node2D
 	private float GetSurfaceOffsetFromTop(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		Vector2I atlas2 = tileMap.GetCellAtlasCoords(0, cell + new Vector2I(0,1));
+		Vector2I atlas2 = tileMap.GetCellAtlasCoords(0, cell + new Vector2I(0,-2));
 		if (atlas2.X == 8 && atlas2.Y == 1)
 		{
-			hankymylove.Position = new Vector2(0,0);
+			hankymylove.Position = new Vector2(0,5);
+			GD.Print("Walla");
 		}
 		else
 		{
@@ -74,7 +75,6 @@ public partial class HankMovement : Node2D
 		}
 		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1) && IsLadderTile(cell + new Vector2I(0,-1)))
 		{
-			GD.Print("hoeijwoifjeowijojifeoijgroijrwgjoidijowefxjiorjiotrwjoiefijowdefwoeij");
 			return 8.0f; 
 		}
 		else if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 

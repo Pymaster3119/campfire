@@ -117,9 +117,11 @@ public partial class ZombieScript : Node2D
 			{
 				_currentPath = Array.Empty<Vector2>();
 				//Damage that guy and die
-				HankStats.Health -= HoardGenerator.zombDamage;
-				QueueFree();
-				
+				if (GlobalPosition.DistanceTo(HankMovement.hankPosition) < StopDistance)
+				{
+					HankStats.Health -= HoardGenerator.zombDamage;
+					QueueFree();
+				}
 			}
 			else
 			{
