@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://c6xm3c10ghmvd"]
+
+[ext_resource type="Script" uid="uid://bk0g5cqjit3h3" path="res://TimeToNextHoarde.cs" id="1_ng5gr"]
+
+[node name="PrimaryUi" type="Control" unique_id=681583355]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=250377197 node_paths=PackedStringArray("ProgressBarLabel")]
+layout_mode = 0
+offset_left = -330.0
+offset_top = -363.0
+offset_right = 625.0
+offset_bottom = -336.0
+max_value = 60.0
+value = 24.78
+script = ExtResource("1_ng5gr")
+ProgressBarLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="ProgressBar" unique_id=392956615]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 2.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "67 s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="." unique_id=2144990478]
+layout_mode = 0
+offset_left = -506.0
+offset_top = -361.0
+offset_right = -351.0
+offset_bottom = -338.0
+text = "Time To Next Hoard"

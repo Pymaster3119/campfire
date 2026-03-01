@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bu76pwmg2orku"]
+
+[ext_resource type="Script" uid="uid://bsch173jl0am7" path="res://npcs/HoardGenerator.cs" id="1_fd41d"]
+
+[node name="Hoards" type="Node2D" unique_id=785973272]
+script = ExtResource("1_fd41d")
