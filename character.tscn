@@ -4,8 +4,9 @@
 [ext_resource type="Script" uid="uid://puccacyl22h1" path="res://npcs/HankMovement.cs" id="2_pjt0s"]
 [ext_resource type="Script" uid="uid://d1i0wo4xcec06" path="res://npcs/HankStats.cs" id="3_wa5vi"]
 
-[node name="Node2D" type="Node2D" unique_id=2105058230]
+[node name="Node2D" type="Node2D" unique_id=2105058230 node_paths=PackedStringArray("hankymylove")]
 script = ExtResource("2_pjt0s")
+hankymylove = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2085501431]
 texture = ExtResource("1_glpr6")

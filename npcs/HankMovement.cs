@@ -19,6 +19,7 @@ public partial class HankMovement : Node2D
 	private const float EPSILON = 0.1f; 
 	
 	[Export] public Control deathscreen;
+	[Export] public Sprite2D hankymylove;
 
 	public override void _Ready()
 	{
@@ -68,14 +69,22 @@ public partial class HankMovement : Node2D
 	private float GetSurfaceOffsetFromTop(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
+		if (atlas.X == 8 && atlas.Y == 1)
+		{
+			//hankymylove.Position = new Vector2(0,-1);
+		}
+		else
+		{
+			//hankymylove.Position = new Vector2(0,1);
+		}
 		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1) && IsLadderTile(cell + new Vector2I(0,-1)))
 		{
 			GD.Print("hoeijwoifjeowijojifeoijgroijrwgjoidijowefxjiorjiotrwjoiefijowdefwoeij");
-			return 7.0f; 
+			return 8.0f; 
 		}
 		else if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 
-			return 1.0f;
-			
+			return 0.0f;
+		
 		return 0.0f;
 	}
 
