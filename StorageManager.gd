@@ -1,40 +1,25 @@
-using Godot;
-using System;
-using System.Collections.Generic;
+extends Node
 
-public partial class NewScript : Node
-{
-	private Dictionary<string, int> _amounts = new();
+var _amounts: Dictionary = {}
 
-	public override void _Ready()
-	{
-		GD.Print("StorageManager READY (autoload works)");
-		_amounts["wood"] = 25;
-		_amounts["tile"] = 50;
-	}
+func _ready():
+	print("StorageManager READY (autoload works)")
+	_amounts["wood"] = 25
+	_amounts["tile"] = 50
 
-	public int GetAmount(string id)
-	{
-		return _amounts.ContainsKey(id) ? _amounts[id] : 0;
-	}
+func get_amount(id: String) -> int:
+	return _amounts[id] if _amounts.has(id) else 0
 
-	public bool HasAmount(string id, int amount)
-	{
-		return GetAmount(id) >= amount;
-	}
+func has_amount(id: String, amount: int) -> bool:
+	return get_amount(id) >= amount
 
-	public void Add(string id, int amount)
-	{
-		_amounts[id] = GetAmount(id) + amount;
-		GD.Print($"Added {amount} {id}. Now: {_amounts[id]}");
-	}
+func add(id: String, amount: int):
+	_amounts[id] = get_amount(id) + amount
+	print("Added ", amount, " ", id, ". Now: ", _amounts[id])
 
-	public bool Remove(string id, int amount)
-	{
-		if (!HasAmount(id, amount))
-			return false;
-		_amounts[id] -= amount;
-		GD.Print($"Removed {amount} {id}. Now: {_amounts[id]}");
-		return true;
-	}
-}
+func remove(id: String, amount: int) -> bool:
+	if not has_amount(id, amount):
+		return false
+	_amounts[id] -= amount
+	print("Removed ", amount, " ", id, ". Now: ", _amounts[id])
+	return true
