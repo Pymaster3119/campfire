@@ -1,24 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://csr6y5qusjlrj"]
+[gd_scene format=3 uid="uid://csr6y5qusjlrj"]
 
 [ext_resource type="Texture2D" uid="uid://dfx3dlwm87row" path="res://assets/CrateTile.png" id="1_uep05"]
-[ext_resource type="Script" path="res://objects/CrateScript.cs" id="2_crate"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mo0jf"]
 size = Vector2(8, 8)
 
-[node name="Crate" type="Area2D"]
-script = ExtResource("2_crate")
+[node name="Crate" type="Area2D" unique_id=414635019]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=407154456]
 texture = ExtResource("1_uep05")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=946187829]
 shape = SubResource("RectangleShape2D_mo0jf")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1157789283]
 offset_left = -10.0
 offset_top = -14.0
 offset_right = 10.0
 offset_bottom = -2.0
-horizontal_alignment = 1
 text = "?"
+horizontal_alignment = 1
