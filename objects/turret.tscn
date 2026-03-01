@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://jg5hhxnebnla"]
 
 [ext_resource type="Script" uid="uid://xjiomm2asm5e" path="res://objects/Turret.cs" id="1_turret"]
+[ext_resource type="Texture2D" uid="uid://bgkvg62vaadkp" path="res://assets/Buildings/Turret.png" id="2_ry24m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(6, 6)
@@ -9,11 +10,13 @@ size = Vector2(6, 6)
 radius = 60.0
 
 [node name="Turret" type="Area2D" unique_id=493068573]
+z_index = 10
 script = ExtResource("1_turret")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=787620365]
 modulate = Color(0.5, 0.5, 1, 1)
 scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ry24m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1449510728]
 shape = SubResource("RectangleShape2D_body")
