@@ -38,15 +38,19 @@ public partial class HankMovement : Node2D
 
 	private bool IsBackgroundTile(Vector2I cell)
 	{
+		int sourceId = tileMap.GetCellSourceId(0, cell);
+		if (sourceId == -1) return true;
+		if (sourceId == 0) return false; // Source 0 (stone) = solid
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas == new Vector2I(-1, -1)) return true;
 		return atlas.X >= 4 && atlas.X <= 7 && atlas.Y >= 0 && atlas.Y <= 3;
 	}
 
 	private bool IsFloorTile(Vector2I cell)
 	{
+		int sourceId = tileMap.GetCellSourceId(0, cell);
+		if (sourceId == -1) return false;
+		if (sourceId == 0) return true; // Source 0 (stone) = always solid
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas == new Vector2I(-1, -1)) return false;
 		if (IsBackgroundTile(cell)) return false; 
 		if (atlas == new Vector2I(8, 1)) return true; // Grass
 		if (atlas == new Vector2I(8, 0)) return true; // Stone
@@ -55,8 +59,9 @@ public partial class HankMovement : Node2D
 
 	private bool IsLadderTile(Vector2I cell)
 	{
+		int sourceId = tileMap.GetCellSourceId(0, cell);
+		if (sourceId != 1) return false; // Only source 1 has ladders
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas == new Vector2I(-1, -1)) return false;
 		return atlas.X <= 3;
 	}
 
