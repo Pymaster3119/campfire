@@ -190,6 +190,44 @@ public partial class HankMovement : Node2D
 		HankStats.Hunger -= 5;
 		_targetBreakTile = _pendingBreakTile;
 		_breakButton.Visible = false;
+		
+		//Check if it is in the list of tiles #TODO
+		Vector2I tile = _pendingBreakTile.Value;
+		if (GenerateOres.stonePositions.Contains(tile))
+		{
+			GenerateOres.stonePositions.Remove(tile);
+			ResourceManager.stone++;
+		}
+		// Bronze
+		else if (GenerateOres.bronzePositions.Contains(tile))
+		{
+			GenerateOres.bronzePositions.Remove(tile);
+			ResourceManager.bronze++;
+		}
+		// Iron
+		else if (GenerateOres.ironPositions.Contains(tile))
+		{
+			GenerateOres.ironPositions.Remove(tile);
+			ResourceManager.iron++;
+		}
+		// Gunpowder
+		else if (GenerateOres.gunpowderPositions.Contains(tile))
+		{
+			GenerateOres.gunpowderPositions.Remove(tile);
+			ResourceManager.gunpowder++;
+		}
+		// Diamond
+		else if (GenerateOres.diamondPositions.Contains(tile))
+		{
+			GenerateOres.diamondPositions.Remove(tile);
+			ResourceManager.diamond++;
+		}
+		// Medpack
+		else if (GenerateOres.medpackPositions.Contains(tile))
+		{
+			GenerateOres.medpackPositions.Remove(tile);
+			ResourceManager.medkit++;
+		}
 
 		long startId = _astar.GetClosestPoint(GlobalPosition);
 		// Find the best walkable node adjacent to the block we want to break
