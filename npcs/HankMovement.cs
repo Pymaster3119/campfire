@@ -24,6 +24,8 @@ public partial class HankMovement : Node2D
 	private const int TILE_SIZE = 8;
 	private const int HANK_HALF_HEIGHT = 8; 
 	private const float EPSILON = 0.1f; 
+	
+	[Export] public Control deathscreen;
 
 	public override void _Ready()
 	{
@@ -150,6 +152,14 @@ public partial class HankMovement : Node2D
 
 	public override void _Process(double delta)
 	{
+		if(HankStats.Health > 0)
+		{
+			deathscreen.Hide();
+		}
+		else
+		{
+			deathscreen.Show();
+		}
 		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
 		{
 			if (_targetBreakTile.HasValue) PerformBreak();
