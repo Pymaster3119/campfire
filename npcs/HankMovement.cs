@@ -139,6 +139,15 @@ public partial class HankMovement : Node2D
 					velocity.Y = -TILE_SIZE; 
 				}
 			}
+			
+			if(velocity.X > 0)
+			{
+				hankymylove.Scale = new Vector2 (-1,1);
+			}
+			else
+			{
+				hankymylove.Scale = new Vector2 (1,1);
+			}
 		}
 
 		if (onLadder && inputDir.Y != 0)
