@@ -6,15 +6,15 @@ public partial class HankStats : Node
 {
 	// ── Stats (0–100) ──────────────────────────────────────────
 	public static float Hygiene      { get; set; } = 100f;
-	public static float Education    { get; set; } = 100f;
+	public static float Education    { get; set; } = 0f;
 	public static float Hunger       { get; set; } = 100f;
 	public static float Health       { get; set; } = 100f;
 
 	// ── Base decay per real-world minute ──────────────────────
 	private const float DecayHygiene       = 5f;
 	private const float DecayEducation     = 0f;
-	private const float DecayHunger        = 1f;
-	private const float DecayHealth        = 5f;
+	private const float DecayHunger        = 10f;
+	private const float DecayHealth        = 0f;
 
 	// ── Threshold tracking (prevent signal spam) ───────────────
 	private Dictionary<string, bool> _isCritical = new();

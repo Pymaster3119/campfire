@@ -79,8 +79,6 @@ public partial class HankMovement : Node2D
 		return 0.0f;
 	}
 
-	// --- GRAPH BUILDING ---
-
 	private void BuildGraph()
 	{
 		_cellToId.Clear();
@@ -188,6 +186,8 @@ public partial class HankMovement : Node2D
 	private void OnBreakButtonPressed()
 	{
 		if (!_pendingBreakTile.HasValue) return;
+		//Reduce hunger
+		HankStats.Hunger -= 5;
 		_targetBreakTile = _pendingBreakTile;
 		_breakButton.Visible = false;
 
