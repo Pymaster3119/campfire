@@ -109,6 +109,16 @@ public partial class HankMovement : Node2D
 					PerformBreak();
 				}
 			}
+			//Pindallooo
+			if (Input.IsActionJustPressed("medkit"))
+			{
+				if(ResourceManager.medkit > 0)
+				{
+					HankStats.Health = 100;
+					ResourceManager.medkit -= 1;
+				}
+			}
+			
 		}
 
 		Vector2 inputDir = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
