@@ -65,7 +65,7 @@ tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_x3g6e")
 sources/1 = SubResource("TileSetAtlasSource_30lbi")
 
-[node name="Node2D" type="Node2D" unique_id=1814127088]
+[node name="Node2D2" type="Node2D" unique_id=1814127088]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1507135723]
 process_mode = 4
@@ -97,8 +97,10 @@ tileMapHeight = 100
 [node name="Hoards" parent="." unique_id=785973272 instance=ExtResource("3_acvur")]
 zombTemplate = ExtResource("4_acvur")
 
-[node name="Hank" parent="." unique_id=2105058230 instance=ExtResource("3_30lbi")]
+[node name="Hank" parent="." unique_id=2105058230 node_paths=PackedStringArray("tileMap", "deathscreen") instance=ExtResource("3_30lbi")]
 position = Vector2(16, -1)
+tileMap = NodePath("../TileMap")
+deathscreen = NodePath("YouDied")
 
 [node name="Camera2D" type="Camera2D" parent="Hank" unique_id=494192269]
 zoom = Vector2(4, 4)
