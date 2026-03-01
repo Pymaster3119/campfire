@@ -8,7 +8,6 @@ public partial class HankMovement : Node2D
 	[Export] public float MoveSpeed = 100f; // Increased for better feel in WASD
 	[Export] public float ClimbSpeed = 80f;
 
-	private Button _breakButton;
 	private Vector2I? _pendingBreakTile = null; 
 	private Vector2I? _targetBreakTile = null;  
 
@@ -20,27 +19,17 @@ public partial class HankMovement : Node2D
 	
 	[Export] public Control deathscreen;
 	[Export] public Sprite2D hankymylove;
+	[Export] public float BreakHoldTime = 0.8f; // How many seconds to hold
+	private float _currentHoldTimer = 0f;
+	private bool _isHolding = false;
+	private Vector2I _miningTile;
 
 	public override void _Ready()
 	{
 		if (tileMap == null)
 			tileMap = GetTree().CurrentScene.GetNodeOrNull<TileMap>("TileMap");
-		
-		SetupBreakButton();
-		// We no longer need BuildGraph() for WASD movement!
 	}
 
-	private void SetupBreakButton()
-	{
-		_breakButton = new Button();
-		_breakButton.Text = "Break";
-		_breakButton.Visible = false;
-		_breakButton.ZIndex = 10; 
-		AddChild(_breakButton);
-		_breakButton.Pressed += OnBreakButtonPressed;
-	}
-
-	// --- TILE CLASSIFICATION (Unchanged from your original) ---
 
 	private bool IsBackgroundTile(Vector2I cell)
 	{
@@ -92,6 +81,29 @@ public partial class HankMovement : Node2D
 	{
 		UpdateUI();
 		if (HankStats.Health <= 0) return;
+
+		// --- HOLD TO BREAK LOGIC ---
+		if (_isHolding)
+		{
+			// Check if mouse moved to a different tile while holding
+			Vector2I currentHoverTile = tileMap.LocalToMap(GetGlobalMousePosition());
+			if (currentHoverTile != _miningTile)
+			{
+				_isHolding = false;
+				_currentHoldTimer = 0f;
+			}
+			else
+			{
+				_currentHoldTimer += (float)delta;
+				if (_currentHoldTimer >= BreakHoldTime)
+				{
+					_isHolding = false; // Reset state
+					ProcessResourceCollection(_miningTile);
+					_targetBreakTile = _miningTile;
+					PerformBreak();
+				}
+			}
+		}
 
 		Vector2 inputDir = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 		
@@ -198,20 +210,6 @@ public partial class HankMovement : Node2D
 
 	// --- INTERACTION ---
 
-	private void OnBreakButtonPressed()
-	{
-		if (!_pendingBreakTile.HasValue) return;
-		
-		// Resource logic remains the same...
-		ProcessResourceCollection(_pendingBreakTile.Value);
-
-		_targetBreakTile = _pendingBreakTile;
-		_breakButton.Visible = false;
-		
-		// Instead of pathfinding, we just let the player walk there manually
-		// But we set _targetBreakTile so PerformBreak triggers when they get close
-	}
-
 	private void ProcessResourceCollection(Vector2I tile)
 	{
 		HankStats.Hunger -= 5;
@@ -254,20 +252,23 @@ public partial class HankMovement : Node2D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+		if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left)
 		{
-			Vector2 clickPos = GetGlobalMousePosition();
-			Vector2I cell = tileMap.LocalToMap(clickPos);
-
-			if (IsFloorTile(cell) && HankStats.Hunger > 0)
+			if (mouseEvent.Pressed)
 			{
-				_pendingBreakTile = cell;
-				_breakButton.GlobalPosition = tileMap.MapToLocal(cell) + new Vector2(-20, -25);
-				_breakButton.Visible = true;
+				Vector2I cell = tileMap.LocalToMap(GetGlobalMousePosition());
+				
+				if (IsFloorTile(cell) && HankStats.Hunger > 0)
+				{
+					_isHolding = true;
+					_miningTile = cell;
+					_currentHoldTimer = 0f;
+				}
 			}
-			else
+			else // Mouse Released
 			{
-				_breakButton.Visible = false;
+				_isHolding = false;
+				_currentHoldTimer = 0f;
 			}
 		}
 	}

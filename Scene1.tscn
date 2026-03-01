@@ -91,7 +91,7 @@ ironProbability = 92
 gunpowderProbability = 93
 diamondProbability = 94
 tileMapWidth = 30
-tileMapHeight = 10
+tileMapHeight = 100
 
 [node name="Hoards" parent="." unique_id=785973272 instance=ExtResource("3_acvur")]
 zombTemplate = ExtResource("4_acvur")
