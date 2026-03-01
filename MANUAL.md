@@ -18,10 +18,10 @@
 
 Hank has four stats that decay over time:
 
-- **Health** — Drops faster when hungry or dirty. Reach 0 and you die.
-- **Hunger** — Decays the fastest. Mining costs 5 hunger per block.
-- **Hygiene** — Low hygiene accelerates health decay.
-- **Education** — Passive stat.
+- **Health** : Drops faster when hungry or dirty. Reach 0 and you die.
+- **Hunger** : Decays the fastest. Mining costs 5 hunger per block.
+- **Hygiene** : Low hygiene accelerates health decay.
+- **Education** : Passive stat.
 
 ## Resources
 
