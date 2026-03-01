@@ -97,7 +97,7 @@ tileMapHeight = 100
 zombTemplate = ExtResource("4_acvur")
 
 [node name="Hank" parent="." unique_id=2105058230 node_paths=PackedStringArray("deathscreen") instance=ExtResource("3_30lbi")]
-position = Vector2(18, -1)
+position = Vector2(16, -2)
 deathscreen = NodePath("YouDied")
 
 [node name="Camera2D" type="Camera2D" parent="Hank" unique_id=494192269]

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
+ 
 public partial class HankMovement : Node2D
 {
 	[Export] public TileMap tileMap;
@@ -58,13 +58,14 @@ public partial class HankMovement : Node2D
 	private float GetSurfaceOffsetFromTop(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas.X == 8 && atlas.Y == 1)
+		Vector2I atlas2 = tileMap.GetCellAtlasCoords(0, cell + new Vector2I(0,1));
+		if (atlas2.X == 8 && atlas2.Y == 1)
 		{
-			//hankymylove.Position = new Vector2(0,-1);
+			hankymylove.Position = new Vector2(0,0);
 		}
 		else
 		{
-			//hankymylove.Position = new Vector2(0,1);
+			hankymylove.Position = new Vector2(0,-1);
 		}
 		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1) && IsLadderTile(cell + new Vector2I(0,-1)))
 		{
