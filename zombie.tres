@@ -1,0 +1,51 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://d2sttjaqmrp43"]
+
+[ext_resource type="Texture2D" uid="uid://d4dnoxlnqj01f" path="res://assets/zombie-Sheet.png" id="1_nkes6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dkf1c"]
+atlas = ExtResource("1_nkes6")
+region = Rect2(0, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfp4k"]
+atlas = ExtResource("1_nkes6")
+region = Rect2(0, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5wfu"]
+atlas = ExtResource("1_nkes6")
+region = Rect2(8, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnx2q"]
+atlas = ExtResource("1_nkes6")
+region = Rect2(16, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ecow4"]
+atlas = ExtResource("1_nkes6")
+region = Rect2(24, 0, 8, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dkf1c")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfp4k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y5wfu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnx2q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ecow4")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]

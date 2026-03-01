@@ -2,10 +2,15 @@
 
 [ext_resource type="Script" uid="uid://breinx2j1w66g" path="res://npcs/ZombieScript.cs" id="1_roy8y"]
 [ext_resource type="Texture2D" uid="uid://ccyhkramjmei3" path="res://assets/zombie.png" id="2_nqyhc"]
+[ext_resource type="SpriteFrames" uid="uid://d2sttjaqmrp43" path="res://zombie.tres" id="3_r1u63"]
 
 [node name="Zombie" type="Node2D" unique_id=1736674784 node_paths=PackedStringArray("hankymylove")]
 script = ExtResource("1_roy8y")
-hankymylove = NodePath("Sprite2D")
+hankymylove = NodePath("AnimatedSprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=384868509]
+visible = false
 texture = ExtResource("2_nqyhc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=820495071]
+sprite_frames = ExtResource("3_r1u63")

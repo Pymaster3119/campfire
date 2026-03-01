@@ -24,7 +24,7 @@ public partial class ZombieScript : Node2D
 	private const int TILE_SIZE = 8;
 	private const int HANK_HALF_HEIGHT = 8; 
 	private const float EPSILON = 0.1f; 
-	[Export] public Sprite2D hankymylove;
+	[Export] public AnimatedSprite2D hankymylove;
 
 	public override void _Ready()
 	{
@@ -132,7 +132,15 @@ public partial class ZombieScript : Node2D
 			}
 			_updateTimer = 0f;
 		}
-
+		//Animate me zaddy
+		if((_currentPath[_pathIndex].Y > GlobalPosition.Y + 2.0f && !IsCurrentlyOnLadder()) || IsCurrentlyOnLadder())
+		{
+			hankymylove.Play("default");
+		}
+		else
+		{
+			hankymylove.Play("run");
+		}
 		if (_currentPath != null && _pathIndex < _currentPath.Length)
 		{
 			Vector2 targetPoint = _currentPath[_pathIndex];

@@ -13,4 +13,4 @@ script = ExtResource("3_wa5vi")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2110474272]
 sprite_frames = ExtResource("4_wfnr8")
-frame_progress = 0.34913847
+frame_progress = 0.4201137
