@@ -4,14 +4,11 @@ using System;
 public partial class BuildSystem : Node2D
 {
 	private bool _buildMode = false;
-	private string _selectedItem = "turret";
-	private PackedScene _turretScene;
 	private TileMap _tileMap;
 	private Label _label;
 
 	public override void _Ready()
 	{
-		_turretScene = GD.Load<PackedScene>("res://objects/turret.tscn");
 		_tileMap = GetTree().CurrentScene.GetNode<TileMap>("TileMap");
 
 		var canvas = new CanvasLayer();
@@ -19,40 +16,30 @@ public partial class BuildSystem : Node2D
 
 		_label = new Label();
 		_label.Position = new Vector2(4, 4);
-		_label.Text = "";
+		_label.Visible = false;
+		_label.Text = "Build Mode ON";
 		canvas.AddChild(_label);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo
+			&& keyEvent.Keycode == Key.B)
 		{
-			switch (keyEvent.Keycode)
-			{
-				case Key.B:
-					_buildMode = !_buildMode;
-					UpdateLabel();
-					break;
-				case Key.Key1:
-					if (_buildMode) { _selectedItem = "turret"; UpdateLabel(); }
-					break;
-				case Key.Key2:
-					if (_buildMode) { _selectedItem = "tile"; UpdateLabel(); }
-					break;
-			}
+			_buildMode = !_buildMode;
+			_label.Visible = _buildMode;
 		}
 
 		if (_buildMode && @event is InputEventMouseButton mouse
 			&& mouse.Pressed && mouse.ButtonIndex == MouseButton.Left)
 		{
-			PlaceItem();
+			PlaceTile();
 			GetViewport().SetInputAsHandled();
 		}
 	}
 
-	private void PlaceItem()
+	private void PlaceTile()
 	{
-		var storage = GetNode<NewScript>("/root/Storage");
 		Vector2 mousePos = GetGlobalMousePosition();
 
 		if (mousePos.DistanceTo(HankMovement.hankPosition) > 40f)
@@ -61,36 +48,22 @@ public partial class BuildSystem : Node2D
 			return;
 		}
 
-		switch (_selectedItem)
+		Vector2I cell = _tileMap.LocalToMap(mousePos);
+
+		if (_tileMap.GetCellSourceId(0, cell) != -1)
 		{
-			case "turret":
-				if (!storage.Remove("turret", 1))
-				{
-					GD.Print("No turrets in storage!");
-					return;
-				}
-				var turret = _turretScene.Instantiate<Node2D>();
-				Vector2I tCell = _tileMap.LocalToMap(mousePos);
-				turret.GlobalPosition = _tileMap.MapToLocal(tCell);
-				GetTree().CurrentScene.AddChild(turret);
-				GD.Print("Placed turret!");
-				break;
-
-			case "tile":
-				if (!storage.Remove("wood", 1))
-				{
-					GD.Print("No wood in storage!");
-					return;
-				}
-				Vector2I cell = _tileMap.LocalToMap(mousePos);
-				_tileMap.SetCell(0, cell, 0, new Vector2I(0, 0));
-				GD.Print("Placed tile!");
-				break;
+			GD.Print("Tile already occupied!");
+			return;
 		}
-	}
 
-	private void UpdateLabel()
-	{
-		_label.Text = _buildMode ? $"Build Mode: {_selectedItem} (1=turret 2=tile)" : "";
+		var storage = GetNode<NewScript>("/root/Storage");
+		if (!storage.Remove("tile", 1))
+		{
+			GD.Print("No tiles in storage!");
+			return;
+		}
+
+		_tileMap.SetCell(0, cell, 0, new Vector2I(0, 0));
+		GD.Print("Placed tile!");
 	}
 }
