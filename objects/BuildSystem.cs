@@ -6,6 +6,8 @@ public partial class BuildSystem : Node2D
 	private bool _buildMode = false;
 	private TileMap _tileMap;
 	private Label _label;
+	private bool _bWasPressed = false;
+	private bool _rWasPressed = false;
 
 	public override void _Ready()
 	{
@@ -21,21 +23,27 @@ public partial class BuildSystem : Node2D
 		canvas.AddChild(_label);
 	}
 
+	public override void _Process(double delta)
+	{
+		bool bPressed = Input.IsKeyPressed(Key.B);
+		if (bPressed && !_bWasPressed)
+		{
+			_buildMode = !_buildMode;
+			_label.Visible = _buildMode;
+			GD.Print($"Build mode: {_buildMode}");
+		}
+		_bWasPressed = bPressed;
+
+		bool rPressed = Input.IsKeyPressed(Key.R);
+		if (rPressed && !_rWasPressed)
+		{
+			GetTree().ReloadCurrentScene();
+		}
+		_rWasPressed = rPressed;
+	}
+
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
-		{
-			if (keyEvent.Keycode == Key.B)
-			{
-				_buildMode = !_buildMode;
-				_label.Visible = _buildMode;
-			}
-			else if (keyEvent.Keycode == Key.R)
-			{
-				GetTree().ReloadCurrentScene();
-			}
-		}
-
 		if (_buildMode && @event is InputEventMouseButton mouse
 			&& mouse.Pressed && mouse.ButtonIndex == MouseButton.Left)
 		{
@@ -56,7 +64,11 @@ public partial class BuildSystem : Node2D
 
 		Vector2I cell = _tileMap.LocalToMap(mousePos);
 
-		if (_tileMap.GetCellSourceId(0, cell) != -1)
+		// Allow placement only on background/empty tiles
+		Vector2I atlas = _tileMap.GetCellAtlasCoords(0, cell);
+		bool isEmpty = atlas == new Vector2I(-1, -1);
+		bool isBackground = atlas.X >= 4 && atlas.X <= 7 && atlas.Y >= 0 && atlas.Y <= 3;
+		if (!isEmpty && !isBackground)
 		{
 			GD.Print("Tile already occupied!");
 			return;

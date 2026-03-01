@@ -15,8 +15,13 @@ public partial class HankMovement : Node2D
 
 	private const int TILE_SIZE = 8;
 	private const int HANK_HALF_HEIGHT = 8; 
-	private const float EPSILON = 0.1f; 
-	
+	private const float EPSILON = 0.1f;
+
+	[Export] public float Gravity = 400f;
+	[Export] public float JumpForce = 160f;
+	private float _yVelocity = 0f;
+	private bool _jumpPressed = false;
+
 	[Export] public Control deathscreen;
 	[Export] public Sprite2D hankymylove;
 	[Export] public float BreakHoldTime = 0.8f; // How many seconds to hold
@@ -165,10 +170,30 @@ public partial class HankMovement : Node2D
 
 		GlobalPosition += velocity;
 
-		if (!onLadder || (onLadder && inputDir.Y == 0 && feetOnFloor))
+		if (onLadder && inputDir.Y != 0)
 		{
-			ApplyFloorSnap();
-			GD.Print("wallah");
+			_yVelocity = 0f;
+		}
+		else
+		{
+			_yVelocity += Gravity * (float)delta;
+
+			if (feetOnFloor && _yVelocity >= 0f)
+			{
+				_yVelocity = 0f;
+				ApplyFloorSnap();
+
+				bool spaceNow = Input.IsKeyPressed(Key.Space);
+				if (spaceNow && !_jumpPressed)
+					_yVelocity = -JumpForce;
+				_jumpPressed = spaceNow;
+			}
+			else
+			{
+				_jumpPressed = Input.IsKeyPressed(Key.Space);
+			}
+
+			GlobalPosition += new Vector2(0, _yVelocity * (float)delta);
 		}
 
 		hankPosition = GlobalPosition;
@@ -192,12 +217,8 @@ public partial class HankMovement : Node2D
 		Vector2 probePos = GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT + 1f);
 		Vector2I cell = tileMap.LocalToMap(probePos);
 
-		// If falling through air
 		if (IsBackgroundTile(cell) && !IsLadderTile(cell))
-		{
-			GlobalPosition += new Vector2(0, 2f); // Simple gravity fall
 			return;
-		}
 
 		while (IsFloorTile(cell) && IsFloorTile(cell + Vector2I.Up)) cell += Vector2I.Up;
 
