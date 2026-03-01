@@ -23,11 +23,17 @@ public partial class BuildSystem : Node2D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo
-			&& keyEvent.Keycode == Key.B)
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
 		{
-			_buildMode = !_buildMode;
-			_label.Visible = _buildMode;
+			if (keyEvent.Keycode == Key.B)
+			{
+				_buildMode = !_buildMode;
+				_label.Visible = _buildMode;
+			}
+			else if (keyEvent.Keycode == Key.R)
+			{
+				GetTree().ReloadCurrentScene();
+			}
 		}
 
 		if (_buildMode && @event is InputEventMouseButton mouse
