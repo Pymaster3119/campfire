@@ -41,8 +41,7 @@ Mined from underground tiles:
 ## Building
 
 1. Press **B** to enter build mode
-2. Placed tiles are solid — you can stand on them and they block movement
-3. Press **B** again to exit build mode
+2. Press **B** again to exit build mode
 
 ## Turrets
 
@@ -62,4 +61,4 @@ Mined from underground tiles:
 - Mine underground for resources but watch your hunger
 - Place stone tiles to build walls and platforms
 - Set up turrets near your base to defend against zombie hordes
-- Keep an eye on your stats — if health hits 0, you die (press R to restart)
+- Keep an eye on your stats. If health hits 0, you die (press R to restart)
