@@ -69,7 +69,13 @@ public partial class Turret : Area2D
 	private void DeleteZombie(Node2D target)
 	{
 		if (IsInstanceValid(target))
+		{
+			if (GD.Random(1,10) == 1)
+			{
+				ResourceManager.medkit++;
+			}
 			target.QueueFree();
+		}
 	}
 
 	public void Upgrade()

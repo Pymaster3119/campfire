@@ -145,10 +145,6 @@ public partial class ZombieScript : Node2D
 				if (GlobalPosition.DistanceTo(HankMovement.hankPosition) < StopDistance)
 				{
 					HankStats.Health -= HoardGenerator.zombDamage;
-					if (GD.Random(0,10) == 0)
-					{
-						ResourceManager.medkit++;
-					}
 					QueueFree();
 				}
 			}
