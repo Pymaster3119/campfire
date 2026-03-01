@@ -1,17 +1,16 @@
 [gd_scene format=3 uid="uid://8i6jlaseuvsa"]
 
-[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://assets/Hank.png" id="1_glpr6"]
 [ext_resource type="Script" uid="uid://puccacyl22h1" path="res://npcs/HankMovement.cs" id="2_pjt0s"]
 [ext_resource type="Script" uid="uid://d1i0wo4xcec06" path="res://npcs/HankStats.cs" id="3_wa5vi"]
+[ext_resource type="SpriteFrames" uid="uid://buundvy76k6cq" path="res://animation.tres" id="4_wfnr8"]
 
 [node name="Node2D" type="Node2D" unique_id=2105058230 node_paths=PackedStringArray("hankymylove")]
 script = ExtResource("2_pjt0s")
 hankymylove = NodePath("AnimatedSprite2D")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2085501431]
-texture = ExtResource("1_glpr6")
-
 [node name="Node2D" type="Node2D" parent="." unique_id=1424232418]
 script = ExtResource("3_wa5vi")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2110474272]
+sprite_frames = ExtResource("4_wfnr8")
+frame_progress = 0.34913847

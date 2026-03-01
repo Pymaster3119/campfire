@@ -1,0 +1,49 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://buundvy76k6cq"]
+
+[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://assets/Hank.png" id="1_di24y"]
+[ext_resource type="Texture2D" uid="uid://chxalrxqlccta" path="res://assets/Hank-Sheet.png" id="2_tgmmk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mmgm2"]
+atlas = ExtResource("2_tgmmk")
+region = Rect2(0, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n045q"]
+atlas = ExtResource("2_tgmmk")
+region = Rect2(8, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pumn4"]
+atlas = ExtResource("2_tgmmk")
+region = Rect2(16, 0, 8, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6a0vq"]
+atlas = ExtResource("2_tgmmk")
+region = Rect2(24, 0, 8, 16)
+
+[resource]
+resource_name = "animation"
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_di24y")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mmgm2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n045q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pumn4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6a0vq")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]

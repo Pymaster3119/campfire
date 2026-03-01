@@ -112,7 +112,14 @@ public partial class HankMovement : Node2D
 		}
 
 		Vector2 inputDir = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-		
+		if (inputDir != new Vector2(0,0))
+		{
+			hankymylove.Play("run");
+		}
+		else
+		{
+			hankymylove.Play("default");
+		}
 		Vector2I centerCell = tileMap.LocalToMap(GlobalPosition);
 		Vector2I feetCell = tileMap.LocalToMap(GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT));
 		
