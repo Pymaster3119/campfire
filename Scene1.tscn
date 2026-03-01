@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c6xm3c10ghmvd" path="res://Primary UI.tscn" id="7_5xdti"]
 [ext_resource type="Script" uid="uid://dm6h7rossaymj" path="res://ResourceManager.cs" id="8_otot6"]
 [ext_resource type="PackedScene" uid="uid://dmuy8p6k1p0iv" path="res://YouDied.tscn" id="8_uv5p5"]
+[ext_resource type="Script" path="res://objects/BuildSystem.cs" id="9_build"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x3g6e"]
 texture = ExtResource("1_wpdt7")
@@ -119,3 +120,6 @@ scale = Vector2(0.23999971, 0.23999971)
 
 [node name="Node2D" type="Node2D" parent="Hank" unique_id=1722776263]
 script = ExtResource("8_otot6")
+
+[node name="BuildSystem" type="Node2D" parent="."]
+script = ExtResource("9_build")
