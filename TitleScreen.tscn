@@ -15,6 +15,7 @@ stretch_mode = 1
 [node name="Label" type="Label" parent="." unique_id=423054612]
 offset_right = 1152.0
 offset_bottom = 111.0
+theme_override_font_sizes/font_size = 58
 text = "Hanks Game"
 horizontal_alignment = 1
 vertical_alignment = 1
