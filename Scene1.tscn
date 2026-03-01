@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://dm6h7rossaymj" path="res://ResourceManager.cs" id="8_otot6"]
 [ext_resource type="PackedScene" uid="uid://dmuy8p6k1p0iv" path="res://YouDied.tscn" id="8_uv5p5"]
 [ext_resource type="Script" uid="uid://cumsjuwr55y3s" path="res://objects/BuildSystem.cs" id="9_build"]
+[ext_resource type="AudioStream" uid="uid://lum2qj21bh8x" path="res://2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3" id="10_3q4dw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x3g6e"]
 texture = ExtResource("1_wpdt7")
@@ -126,6 +127,12 @@ scale = Vector2(0.23999971, 0.23999971)
 
 [node name="Node2D2" type="Node2D" parent="Hank" unique_id=1722776263]
 script = ExtResource("8_otot6")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Hank" unique_id=1533128881]
+stream = ExtResource("10_3q4dw")
+autoplay = true
+
+[node name="AudioListener2D" type="AudioListener2D" parent="Hank" unique_id=467195308]
 
 [node name="BuildSystem" type="Node2D" parent="." unique_id=1398161577]
 script = ExtResource("9_build")
