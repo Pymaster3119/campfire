@@ -274,6 +274,8 @@ public partial class HankMovement : Node2D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
+		if (BuildSystem.IsBuilding) return;
+
 		if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left)
 		{
 			if (mouseEvent.Pressed)

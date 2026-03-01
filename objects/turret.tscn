@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://jg5hhxnebnla"]
+    [gd_scene format=3 uid="uid://jg5hhxnebnla"]
 
 [ext_resource type="Script" uid="uid://xjiomm2asm5e" path="res://objects/Turret.cs" id="1_turret"]
 
