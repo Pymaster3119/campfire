@@ -60,6 +60,7 @@ public partial class HankMovement : Node2D
 		if (atlas == new Vector2I(-1, -1)) return false;
 		if (IsBackgroundTile(cell)) return false; 
 		if (atlas == new Vector2I(8, 1)) return true; // Grass
+		if (atlas == new Vector2I(8,0)) return true; // Stone (67)
 		return atlas.Y > 1; 
 	}
 
@@ -186,7 +187,6 @@ public partial class HankMovement : Node2D
 	private void OnBreakButtonPressed()
 	{
 		if (!_pendingBreakTile.HasValue) return;
-		//Reduce hunger
 		HankStats.Hunger -= 5;
 		_targetBreakTile = _pendingBreakTile;
 		_breakButton.Visible = false;
@@ -250,7 +250,7 @@ public partial class HankMovement : Node2D
 			Vector2 clickPos = GetGlobalMousePosition();
 			Vector2I cell = tileMap.LocalToMap(clickPos);
 
-			if (IsFloorTile(cell))
+			if (IsFloorTile(cell) && HankStats.Hunger > 0)
 			{
 				_pendingBreakTile = cell;
 				_breakButton.GlobalPosition = tileMap.MapToLocal(cell) + new Vector2(-20, -25);

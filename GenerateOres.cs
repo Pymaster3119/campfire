@@ -15,7 +15,6 @@ public partial class GenerateOres : TileMap
 	[Export] public int ironProbability;
 	[Export] public int gunpowderProbability;
 	[Export] public int diamondProbability;
-	[Export] public int medpackProbability;
 	[Export] public int tileMapWidth;
 	[Export] public int tileMapHeight;
 	// Called when the node enters the scene tree for the first time.
@@ -23,15 +22,16 @@ public partial class GenerateOres : TileMap
 	{
 		int sourceId = Math.Max(0, GetCellSourceId(0, new Vector2I(0,0)));
 		//Generate Tiles
-		for (int x = 0; x < tileMapWidth; x++)
+		for (int x = -tileMapWidth; x < tileMapWidth; x++)
 		{
-			for (int y = 0; y < tileMapHeight; y++)
+			for (int y = 4; y < tileMapHeight + 4; y++)
 			{
 				//Randomly choose number
 				int rand = GD.RandRange(0,100);
 				if (rand < stoneProbability)
 				{
 					SetCell(0, new Vector2I(x, y), sourceId, stoneCoordinates);
+					GD.Print("Heloo");
 				}
 				else if (rand < bronzeProbability)
 				{
