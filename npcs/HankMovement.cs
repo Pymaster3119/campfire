@@ -21,6 +21,9 @@ public partial class HankMovement : Node2D
 	[Export] public float JumpForce = 160f;
 	private float _yVelocity = 0f;
 	private bool _jumpPressed = false;
+	
+	private float _restoreFreezeTimer = 0f;
+	private bool _isRestoring = false;
 
 	[Export] public Control deathscreen;
 	[Export] public AnimatedSprite2D hankymylove;
@@ -92,7 +95,22 @@ public partial class HankMovement : Node2D
 	{
 		UpdateUI();
 		if (HankStats.Health <= 0) return;
+		if (Input.IsKeyPressed(Key.K) && !_isRestoring)
+		{
+			HankStats.Hunger = 100; // Assuming HankStats.Hunger exists based on your code
+			_restoreFreezeTimer = 5.0f; // Set freeze duration
+			_isRestoring = true;
+			hankymylove.Play("default"); // Stop animation
+		}
 
+		if (_restoreFreezeTimer > 0)
+		{
+			_restoreFreezeTimer -= (float)delta;
+			if (_restoreFreezeTimer <= 0) _isRestoring = false;
+			
+			// Return early so no movement or gravity is processed
+			return; 
+		}
 		// --- HOLD TO BREAK LOGIC ---
 		if (_isHolding)
 		{
