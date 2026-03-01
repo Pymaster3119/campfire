@@ -41,23 +41,15 @@ Mined from underground tiles:
 ## Building
 
 1. Press **B** to enter build mode
-2. Left-click to place a stone tile (costs 1 tile)
-3. Placed tiles are solid — you can stand on them and they block movement
-4. Press **B** again to exit build mode
+2. Placed tiles are solid — you can stand on them and they block movement
+3. Press **B** again to exit build mode
 
 ## Turrets
 
 - Press **T** to place a turret at your mouse cursor
-- Turrets auto-target and kill the nearest zombie in range
-- Press **U** near a turret to upgrade it (max level 3)
+  
 
-| Level | Range | Fire Rate | Upgrade Cost |
-|-------|-------|-----------|-------------|
-| 1 | 60px | 1.0s | — |
-| 2 | 80px | 0.8s | 2 wood |
-| 3 | 100px | 0.6s | 4 wood |
-
-- Turret kills have a 10% chance to drop a medkit
+- Zombies kills have a 10% chance to drop a medkit
 
 ## Zombies
 
