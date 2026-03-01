@@ -2,29 +2,32 @@
 
 [ext_resource type="Script" uid="uid://bk0g5cqjit3h3" path="res://TimeToNextHoarde.cs" id="1_ng5gr"]
 [ext_resource type="Script" uid="uid://7om34als7365" path="res://AttributeBar.cs" id="2_2y3mh"]
-[ext_resource type="Texture2D" uid="uid://dfx3dlwm87row" path="res://assets/CrateTile.png" id="3_4uky6"]
-[ext_resource type="Texture2D" uid="uid://by65t5c4fg4ml" path="res://assets/tiles.png" id="3_tcylr"]
+[ext_resource type="Texture2D" uid="uid://bccy5yy0a23yi" path="res://assets/GUI/icon tiles.png" id="3_yaolj"]
 [ext_resource type="Script" uid="uid://ccva11xow2acl" path="res://ResourceViewer.cs" id="4_yaolj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uukrx"]
-atlas = ExtResource("3_tcylr")
-region = Rect2(64, 0, 8, 8)
+atlas = ExtResource("3_yaolj")
+region = Rect2(0, 0, 8, 8)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_heitf"]
-atlas = ExtResource("3_tcylr")
-region = Rect2(72, 24, 8, 8)
+atlas = ExtResource("3_yaolj")
+region = Rect2(16, 0, 8, 8)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rppvr"]
-atlas = ExtResource("3_tcylr")
-region = Rect2(80, 24, 8, 8)
+atlas = ExtResource("3_yaolj")
+region = Rect2(24, 0, 8, 8)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5di5u"]
-atlas = ExtResource("3_tcylr")
-region = Rect2(80, 16, 8, 8)
+atlas = ExtResource("3_yaolj")
+region = Rect2(32, 0, 8, 8)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r43j7"]
-atlas = ExtResource("3_tcylr")
-region = Rect2(72, 16, 8, 8)
+atlas = ExtResource("3_yaolj")
+region = Rect2(8, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tcylr"]
+atlas = ExtResource("3_yaolj")
+region = Rect2(40, 0, 8, 8)
 
 [node name="PrimaryUi" type="Control" unique_id=681583355]
 layout_mode = 3
@@ -258,7 +261,7 @@ horizontal_alignment = 2
 offset_left = 47.0
 offset_right = 68.0
 offset_bottom = 21.0
-texture = ExtResource("3_4uky6")
+texture = SubResource("AtlasTexture_tcylr")
 script = ExtResource("4_yaolj")
 inventoryThingy = NodePath("Node2D/Label")
 resource = "medkit"
@@ -274,8 +277,9 @@ text = "1"
 horizontal_alignment = 2
 
 [node name="Label2" type="Label" parent="Inventory/TextureRect11/Node2D" unique_id=1419078479]
-offset_right = 108.0
-offset_bottom = 23.0
+offset_top = -1.0
+offset_right = 110.0
+offset_bottom = 22.0
 scale = Vector2(0.1600017, 0.1600017)
 text = "Press Q to use"
 horizontal_alignment = 2
