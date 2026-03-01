@@ -10,6 +10,7 @@ public partial class NewScript : Node
 	{
 		GD.Print("StorageManager READY (autoload works)");
 		_amounts["wood"] = 25;
+		_amounts["tile"] = 50;
 	}
 
 	public int GetAmount(string id)
