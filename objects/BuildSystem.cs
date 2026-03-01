@@ -93,7 +93,7 @@ public partial class BuildSystem : Node2D
 			return true; // empty sky cell
 
 		Vector2I atlas = _tileMap.GetCellAtlasCoords(0, cell);
-		bool isBackground = atlas.X >= 4 && atlas.X <= 7 && atlas.Y >= 0 && atlas.Y <= 3;
+		bool isBackground = atlas.X >= 4 && atlas.X <= 8 && atlas.Y >= 0 && atlas.Y <= 3;
 		return isBackground;
 	}
 
