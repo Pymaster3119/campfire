@@ -67,11 +67,11 @@ public partial class HankMovement : Node2D
 		GD.Print(atlas);
 		if (atlas.X == 8 && atlas.Y == 1)
 		{
-			hankymylove.Position = new Vector2(0,0);
+			hankymylove.Position = new Vector2(0,-1);
 		}
 		else
 		{
-			hankymylove.Position = new Vector2(0,-1);
+			hankymylove.Position = new Vector2(0,-2);
 		}
 		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1) && IsLadderTile(cell + new Vector2I(0,-1)))
 		{
