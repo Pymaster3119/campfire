@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://du55i63d23ya"]
+
+[ext_resource type="Texture2D" uid="uid://d2labr8dkfkk3" path="res://assets/icon.svg" id="1_fnlyl"]
+
+[node name="TitleScreen" type="Node2D" unique_id=166447962]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1545205943]
+offset_left = -133.0
+offset_top = -96.0
+offset_right = 1314.0
+offset_bottom = 788.0
+texture = ExtResource("1_fnlyl")
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="." unique_id=423054612]
+offset_right = 1152.0
+offset_bottom = 111.0
+text = "Hanks Game"
