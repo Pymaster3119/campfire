@@ -6,7 +6,6 @@ public partial class Turret : Area2D
 	[Export] public int Level { get; set; } = 1;
 
 	private float _range = 60f;
-	private float _damage = 10f;
 	private float _fireRate = 1.0f;
 	private float _cooldown = 0f;
 
@@ -21,13 +20,12 @@ public partial class Turret : Area2D
 	private void ApplyLevel()
 	{
 		_range = 60f + (Level - 1) * 20f;
-		_damage = 10f + (Level - 1) * 8f;
 		_fireRate = 1.0f - (Level - 1) * 0.2f;
 
 		if (_rangeShape?.Shape is CircleShape2D circle)
 			circle.Radius = _range;
 
-		GD.Print($"Turret level {Level}: range={_range} dmg={_damage} rate={_fireRate}s");
+		GD.Print($"Turret level {Level}: range={_range} rate={_fireRate}s");
 	}
 
 	public override void _Process(double delta)
@@ -40,7 +38,7 @@ public partial class Turret : Area2D
 		if (target == null)
 			return;
 
-		Shoot(target);
+		DeleteZombie(target);
 		_cooldown = _fireRate;
 	}
 
@@ -49,28 +47,29 @@ public partial class Turret : Area2D
 		Node2D closest = null;
 		float closestDist = float.MaxValue;
 
-		foreach (Node2D body in GetOverlappingBodies())
+		var zombies = GetTree().GetNodesInGroup("zombies");
+
+		foreach (Node node in zombies)
 		{
-			if (body is not ZombieScript)
+			if (node is not Node2D zombie)
 				continue;
 
-			float dist = GlobalPosition.DistanceTo(body.GlobalPosition);
-			if (dist < closestDist)
+			float dist = GlobalPosition.DistanceTo(zombie.GlobalPosition);
+
+			if (dist <= _range && dist < closestDist)
 			{
 				closestDist = dist;
-				closest = body;
+				closest = zombie;
 			}
 		}
+
 		return closest;
 	}
 
-	private void Shoot(Node2D target)
+	private void DeleteZombie(Node2D target)
 	{
-		var bullet = new Bullet();
-		bullet.GlobalPosition = GlobalPosition;
-		bullet.Direction = GlobalPosition.DirectionTo(target.GlobalPosition);
-		bullet.Damage = _damage;
-		GetTree().CurrentScene.AddChild(bullet);
+		if (IsInstanceValid(target))
+			target.QueueFree();
 	}
 
 	public void Upgrade()

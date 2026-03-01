@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://c6xm3c10ghmvd"]
 
 [ext_resource type="Script" uid="uid://bk0g5cqjit3h3" path="res://TimeToNextHoarde.cs" id="1_ng5gr"]
+[ext_resource type="Script" uid="uid://7om34als7365" path="res://AttributeBar.cs" id="2_2y3mh"]
+[ext_resource type="Texture2D" uid="uid://dfx3dlwm87row" path="res://assets/CrateTile.png" id="3_4uky6"]
+[ext_resource type="Script" uid="uid://ccva11xow2acl" path="res://ResourceViewer.cs" id="4_yaolj"]
 
 [node name="PrimaryUi" type="Control" unique_id=681583355]
 layout_mode = 3
@@ -9,19 +12,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="." unique_id=250377197 node_paths=PackedStringArray("ProgressBarLabel")]
-layout_mode = 0
-offset_left = -330.0
-offset_top = -363.0
-offset_right = 625.0
-offset_bottom = -336.0
+[node name="Hoarde Timer" type="Node2D" parent="." unique_id=1689169578]
+scale = Vector2(0.8799991, 1)
+
+[node name="ProgressBar" type="ProgressBar" parent="Hoarde Timer" unique_id=250377197 node_paths=PackedStringArray("ProgressBarLabel")]
+offset_left = -69.77284
+offset_top = -136.0
+offset_right = 885.2272
+offset_bottom = -109.0
+scale = Vector2(0.28000063, 0.28000063)
+mouse_filter = 1
 max_value = 60.0
 value = 24.78
 script = ExtResource("1_ng5gr")
 ProgressBarLabel = NodePath("Label")
 
-[node name="Label" type="Label" parent="ProgressBar" unique_id=392956615]
+[node name="Label" type="Label" parent="Hoarde Timer/ProgressBar" unique_id=392956615]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,14 +38,216 @@ offset_right = 2.0
 offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 text = "67 s"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="." unique_id=2144990478]
-layout_mode = 0
-offset_left = -506.0
-offset_top = -361.0
-offset_right = -351.0
-offset_bottom = -338.0
+[node name="Label" type="Label" parent="Hoarde Timer" unique_id=2144990478]
+offset_left = -114.77284
+offset_top = -134.0
+offset_right = 40.227158
+offset_bottom = -111.0
+scale = Vector2(0.28000063, 0.28000063)
+mouse_filter = 1
 text = "Time To Next Hoard"
+
+[node name="Hygene" type="Node2D" parent="." unique_id=677935726]
+scale = Vector2(0.335, 0.335)
+
+[node name="ProgressBar" type="ProgressBar" parent="Hygene" unique_id=573278849 node_paths=PackedStringArray("ProgressBarText")]
+offset_left = 352.2388
+offset_top = -379.10446
+offset_right = 518.55225
+offset_bottom = -352.10446
+script = ExtResource("2_2y3mh")
+ProgressBarText = NodePath("../Label")
+attribute = "hygiene"
+
+[node name="Label" type="Label" parent="Hygene" unique_id=1636622114]
+offset_left = 217.91045
+offset_top = -379.10446
+offset_right = 348.55225
+offset_bottom = -356.10446
+text = "Hygene"
+horizontal_alignment = 2
+
+[node name="Hygene2" type="Node2D" parent="." unique_id=2099226319]
+position = Vector2(0, 10)
+scale = Vector2(0.335, 0.335)
+
+[node name="ProgressBar" type="ProgressBar" parent="Hygene2" unique_id=652785387 node_paths=PackedStringArray("ProgressBarText")]
+offset_left = 352.2388
+offset_top = -379.10446
+offset_right = 518.55225
+offset_bottom = -352.10446
+script = ExtResource("2_2y3mh")
+ProgressBarText = NodePath("../Label")
+attribute = "health"
+
+[node name="Label" type="Label" parent="Hygene2" unique_id=1979103300]
+offset_left = 185.07462
+offset_top = -379.10446
+offset_right = 348.55225
+offset_bottom = -356.10446
+text = "Hygene"
+horizontal_alignment = 2
+
+[node name="Hygene3" type="Node2D" parent="." unique_id=169045548]
+position = Vector2(0, 20)
+scale = Vector2(0.335, 0.335)
+
+[node name="ProgressBar" type="ProgressBar" parent="Hygene3" unique_id=349269294 node_paths=PackedStringArray("ProgressBarText")]
+offset_left = 352.2388
+offset_top = -379.10446
+offset_right = 518.55225
+offset_bottom = -352.10446
+script = ExtResource("2_2y3mh")
+ProgressBarText = NodePath("../Label")
+attribute = "education"
+
+[node name="Label" type="Label" parent="Hygene3" unique_id=1390739592]
+offset_left = 214.92537
+offset_top = -379.10446
+offset_right = 348.55225
+offset_bottom = -356.10446
+text = "Hygene"
+horizontal_alignment = 2
+
+[node name="Hygene4" type="Node2D" parent="." unique_id=40157456]
+position = Vector2(0, 30)
+scale = Vector2(0.335, 0.335)
+
+[node name="ProgressBar" type="ProgressBar" parent="Hygene4" unique_id=2115263534 node_paths=PackedStringArray("ProgressBarText")]
+offset_left = 352.2388
+offset_top = -379.10446
+offset_right = 518.55225
+offset_bottom = -352.10446
+script = ExtResource("2_2y3mh")
+ProgressBarText = NodePath("../Label")
+attribute = "health"
+
+[node name="Label" type="Label" parent="Hygene4" unique_id=794766827]
+offset_left = 220.89551
+offset_top = -379.10446
+offset_right = 348.55225
+offset_bottom = -356.10446
+text = "Hygene"
+horizontal_alignment = 2
+
+[node name="Inventory" type="Node2D" parent="." unique_id=195626551]
+position = Vector2(36, 0)
+
+[node name="TextureRect6" type="TextureRect" parent="Inventory" unique_id=169087884 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = -68.0
+offset_right = -47.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "stone"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect6" unique_id=1571909307]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect6/Node2D" unique_id=1184966318]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2
+
+[node name="TextureRect7" type="TextureRect" parent="Inventory" unique_id=1784228531 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = -45.0
+offset_right = -24.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "bronze"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect7" unique_id=1496768771]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect7/Node2D" unique_id=1543629137]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2
+
+[node name="TextureRect8" type="TextureRect" parent="Inventory" unique_id=1289166243 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = -22.0
+offset_right = -1.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "iron"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect8" unique_id=335705238]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect8/Node2D" unique_id=1283373393]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2
+
+[node name="TextureRect9" type="TextureRect" parent="Inventory" unique_id=1942534153 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = 1.0
+offset_right = 22.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "gunpowder"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect9" unique_id=898621942]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect9/Node2D" unique_id=1213597281]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2
+
+[node name="TextureRect10" type="TextureRect" parent="Inventory" unique_id=1867202058 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = 24.0
+offset_right = 45.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "diamond"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect10" unique_id=791841529]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect10/Node2D" unique_id=861547251]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2
+
+[node name="TextureRect11" type="TextureRect" parent="Inventory" unique_id=132453972 node_paths=PackedStringArray("inventoryThingy")]
+offset_left = 47.0
+offset_right = 68.0
+offset_bottom = 21.0
+texture = ExtResource("3_4uky6")
+script = ExtResource("4_yaolj")
+inventoryThingy = NodePath("Node2D/Label")
+resource = "medkit"
+
+[node name="Node2D" type="Node2D" parent="Inventory/TextureRect11" unique_id=1893550613]
+
+[node name="Label" type="Label" parent="Inventory/TextureRect11/Node2D" unique_id=678663505]
+offset_top = 15.0
+offset_right = 75.71438
+offset_bottom = 38.0
+scale = Vector2(0.27999926, 0.27999926)
+text = "1"
+horizontal_alignment = 2

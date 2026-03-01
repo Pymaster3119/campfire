@@ -11,10 +11,10 @@ public partial class HankStats : Node
 	public static float Health       { get; set; } = 100f;
 
 	// ── Base decay per real-world minute ──────────────────────
-	private const float DecayHygiene       = 10f;
+	private const float DecayHygiene       = 5f;
 	private const float DecayEducation     = 0f;
-	private const float DecayHunger        = .0f;
-	private const float DecayHealth        = 1f;
+	private const float DecayHunger        = 1f;
+	private const float DecayHealth        = 5f;
 
 	// ── Threshold tracking (prevent signal spam) ───────────────
 	private Dictionary<string, bool> _isCritical = new();
@@ -73,8 +73,22 @@ public partial class HankStats : Node
 		CheckStat("hunger",        Hunger);
 		CheckStat("health",        Health);
 	}
-
-	private void CheckStat(string name, float value)
+	public static double StatLevel(string name)
+	{
+		switch(name)
+		{
+			case "health":
+				return Health;
+			case "hunger":
+				return Hunger;
+			case "education":
+				return Education;
+			case "hygiene":
+				return Hygiene;
+		}
+		return -100;
+	}
+	public void CheckStat(string name, float value)
 	{
 		// Critical: below 20
 		if (value < 20f && !_isCritical[name])
@@ -97,7 +111,7 @@ public partial class HankStats : Node
 		}
 	}
 
-	public void ModifyStat(string stat, float amount)
+	public static void ModifyStat(string stat, float amount)
 	{
 		switch (stat.ToLower())
 		{

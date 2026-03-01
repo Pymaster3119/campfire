@@ -27,7 +27,7 @@ public partial class ZombieScript : Node2D
 	{
 		if (tileMap == null)
 			tileMap = GetTree().CurrentScene.GetNodeOrNull<TileMap>("TileMap");
-		
+		AddToGroup("zombies");
 		BuildGraph();
 	}
 
