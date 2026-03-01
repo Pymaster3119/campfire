@@ -5,7 +5,7 @@ public partial class HoardGenerator : Node2D
 {
 	[Export]
 	public double hoardeTime = 60.0;
-	public static double timer = 0.0;
+	public static double timer = 60.0;
 	public int zombNumber = 5;
 	[Export]
 	public PackedScene zombTemplate;

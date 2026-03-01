@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://c8toidxg3cfq8"]
 
 [ext_resource type="Script" uid="uid://breinx2j1w66g" path="res://npcs/ZombieScript.cs" id="1_roy8y"]
-[ext_resource type="Texture2D" uid="uid://c1byxjj7yh1n4" path="res://assets/Hank.png" id="2_jmu02"]
+[ext_resource type="Texture2D" uid="uid://ccyhkramjmei3" path="res://assets/zombie.png" id="2_nqyhc"]
 
-[node name="Zombie" type="Node2D" unique_id=1736674784]
+[node name="Zombie" type="Node2D" unique_id=1736674784 node_paths=PackedStringArray("hankymylove")]
 script = ExtResource("1_roy8y")
+hankymylove = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=384868509]
-texture = ExtResource("2_jmu02")
+texture = ExtResource("2_nqyhc")
