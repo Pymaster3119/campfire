@@ -6,10 +6,12 @@
 
 [node name="Node2D" type="Node2D" unique_id=2105058230 node_paths=PackedStringArray("hankymylove")]
 script = ExtResource("2_pjt0s")
-hankymylove = NodePath("Sprite2D")
+hankymylove = NodePath("AnimatedSprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2085501431]
 texture = ExtResource("1_glpr6")
 
 [node name="Node2D" type="Node2D" parent="." unique_id=1424232418]
 script = ExtResource("3_wa5vi")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2110474272]

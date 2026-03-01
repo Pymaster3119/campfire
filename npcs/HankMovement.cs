@@ -23,7 +23,7 @@ public partial class HankMovement : Node2D
 	private bool _jumpPressed = false;
 
 	[Export] public Control deathscreen;
-	[Export] public Sprite2D hankymylove;
+	[Export] public AnimatedSprite2D hankymylove;
 	[Export] public float BreakHoldTime = 0.8f; // How many seconds to hold
 	private float _currentHoldTimer = 0f;
 	private bool _isHolding = false;
