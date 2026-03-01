@@ -1,55 +1,39 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
+ 
 public partial class HankMovement : Node2D
 {
 	[Export] public TileMap tileMap;
-	[Export] public float MoveSpeed = 60f;
-	[Export] public float ClimbSpeed = 60f;
+	[Export] public float MoveSpeed = 100f; // Increased for better feel in WASD
+	[Export] public float ClimbSpeed = 80f;
 
-	private Button _breakButton;
 	private Vector2I? _pendingBreakTile = null; 
 	private Vector2I? _targetBreakTile = null;  
 
 	public static Vector2 hankPosition;
 
-	private AStar2D _astar = new AStar2D();
-	private Dictionary<Vector2I, int> _cellToId = new();
-	private int _idCounter = 0;
-
-	private Vector2[] _currentPath = Array.Empty<Vector2>();
-	private int _pathIndex = 0;
-
 	private const int TILE_SIZE = 8;
 	private const int HANK_HALF_HEIGHT = 8; 
 	private const float EPSILON = 0.1f; 
+	
+	[Export] public Control deathscreen;
+	[Export] public Sprite2D hankymylove;
+	[Export] public float BreakHoldTime = 0.8f; // How many seconds to hold
+	private float _currentHoldTimer = 0f;
+	private bool _isHolding = false;
+	private Vector2I _miningTile;
 
 	public override void _Ready()
 	{
 		if (tileMap == null)
 			tileMap = GetTree().CurrentScene.GetNodeOrNull<TileMap>("TileMap");
-		
-		SetupBreakButton();
-		BuildGraph();
 	}
 
-	private void SetupBreakButton()
-	{
-		_breakButton = new Button();
-		_breakButton.Text = "Break";
-		_breakButton.Visible = false;
-		_breakButton.ZIndex = 10; 
-		AddChild(_breakButton);
-		_breakButton.Pressed += OnBreakButtonPressed;
-	}
-
-	// --- TILE CLASSIFICATION ---
 
 	private bool IsBackgroundTile(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		// Treat empty space (-1,-1) as background so Hank can walk through it
 		if (atlas == new Vector2I(-1, -1)) return true;
 		return atlas.X >= 4 && atlas.X <= 7 && atlas.Y >= 0 && atlas.Y <= 3;
 	}
@@ -60,7 +44,7 @@ public partial class HankMovement : Node2D
 		if (atlas == new Vector2I(-1, -1)) return false;
 		if (IsBackgroundTile(cell)) return false; 
 		if (atlas == new Vector2I(8, 1)) return true; // Grass
-		if (atlas == new Vector2I(8,0)) return true; // Stone (67)
+		if (atlas == new Vector2I(8, 0)) return true; // Stone
 		return atlas.Y > 1; 
 	}
 
@@ -68,111 +52,152 @@ public partial class HankMovement : Node2D
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
 		if (atlas == new Vector2I(-1, -1)) return false;
-		// Ladders are X 0-3. We don't check IsBackground here to allow overlap if needed.
 		return atlas.X <= 3;
 	}
 
 	private float GetSurfaceOffsetFromTop(Vector2I cell)
 	{
 		Vector2I atlas = tileMap.GetCellAtlasCoords(0, cell);
-		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 
-			return -1.0f; 
+		Vector2I atlas2 = tileMap.GetCellAtlasCoords(0, cell + new Vector2I(0,1));
+		if (atlas2.X == 8 && atlas2.Y == 1)
+		{
+			hankymylove.Position = new Vector2(0,0);
+		}
+		else
+		{
+			hankymylove.Position = new Vector2(0,-1);
+		}
+		if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1) && IsLadderTile(cell + new Vector2I(0,-1)))
+		{
+			GD.Print("hoeijwoifjeowijojifeoijgroijrwgjoidijowefxjiorjiotrwjoiefijowdefwoeij");
+			return 8.0f; 
+		}
+		else if (atlas.Y > 1 && atlas != new Vector2I(8, 1) && atlas != new Vector2I(-1, -1)) 
+			return 0.0f;
+		
 		return 0.0f;
 	}
 
-	private void BuildGraph()
+	public override void _Process(double delta)
 	{
-		_cellToId.Clear();
-		_astar.Clear();
-		_idCounter = 0;
+		UpdateUI();
+		if (HankStats.Health <= 0) return;
 
-		// IMPORTANT: We check all used cells PLUS the space above them
-		var usedCells = tileMap.GetUsedCells(0);
-		var walkableCandidates = new HashSet<Vector2I>();
-
-		foreach (var cell in usedCells)
+		// --- HOLD TO BREAK LOGIC ---
+		if (_isHolding)
 		{
-			walkableCandidates.Add(cell);
-			walkableCandidates.Add(cell + Vector2I.Up); // Ensure we check the air above every tile
-		}
-
-		foreach (Vector2I cell in walkableCandidates)
-		{
-			bool isLadder = IsLadderTile(cell);
-			bool isPassable = IsBackgroundTile(cell) || isLadder;
-			bool hasFloorBelow = IsFloorTile(cell + Vector2I.Down);
-
-			// A cell gets a node if it's a ladder OR (it's passable air and there's a floor below)
-			if (isLadder || (isPassable && hasFloorBelow))
+			// Check if mouse moved to a different tile while holding
+			Vector2I currentHoverTile = tileMap.LocalToMap(GetGlobalMousePosition());
+			if (currentHoverTile != _miningTile)
 			{
-				int id = _idCounter++;
-				_cellToId[cell] = id;
-
-				Vector2 tileCenter = tileMap.MapToLocal(cell);
-				float floorTopOffset = hasFloorBelow ? GetSurfaceOffsetFromTop(cell + Vector2I.Down) : 0;
-				
-				// Align the node exactly with where ApplyFloorSnap wants Hank to be
-				float floorLocalY = tileMap.MapToLocal(cell + Vector2I.Down).Y - (TILE_SIZE / 2f);
-				float standingY = floorLocalY + floorTopOffset - HANK_HALF_HEIGHT - EPSILON;
-
-				_astar.AddPoint(id, new Vector2(tileCenter.X, isLadder && !hasFloorBelow ? tileCenter.Y : standingY));
+				_isHolding = false;
+				_currentHoldTimer = 0f;
+			}
+			else
+			{
+				_currentHoldTimer += (float)delta;
+				if (_currentHoldTimer >= BreakHoldTime)
+				{
+					_isHolding = false; // Reset state
+					ProcessResourceCollection(_miningTile);
+					_targetBreakTile = _miningTile;
+					PerformBreak();
+				}
 			}
 		}
 
-		foreach (var pair in _cellToId)
-			ConnectNeighbors(pair.Key, pair.Value);
-	}
-
-	private void ConnectNeighbors(Vector2I cell, int id)
-	{
-		// Directions: Left, Right, Up, Down, and Diagonals for steps
-		Vector2I[] directions = { 
-			Vector2I.Left, Vector2I.Right, Vector2I.Up, Vector2I.Down,
-			new Vector2I(1, -1), new Vector2I(-1, -1), // Step up
-			new Vector2I(1, 1), new Vector2I(-1, 1)    // Step down
-		};
-
-		foreach (var dir in directions)
-		{
-			Vector2I neighbor = cell + dir;
-			if (!_cellToId.ContainsKey(neighbor)) continue;
-
-			bool isHorizontal = dir.Y == 0;
-			bool isVerticalLadder = dir.X == 0 && IsLadderTile(cell) && IsLadderTile(neighbor);
-			bool isDiagonalStep = dir.X != 0 && dir.Y != 0; // Allows walking up/down 1-tile bumps
-
-			if (isHorizontal || isVerticalLadder || isDiagonalStep)
-				_astar.ConnectPoints(id, _cellToId[neighbor], true);
-		}
-	}
-
-	// --- MOVEMENT & INTERACTION ---
-
-	public override void _Process(double delta)
-	{
-		if (_currentPath == null || _pathIndex >= _currentPath.Length) 
-		{
-			if (_targetBreakTile.HasValue) PerformBreak();
-			if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
-			return;
-		}
-
-		Vector2 target = _currentPath[_pathIndex];
-		float speed = IsCurrentlyOnLadder() ? ClimbSpeed : MoveSpeed;
-
-		GlobalPosition = GlobalPosition.MoveToward(target, speed * (float)delta);
+		Vector2 inputDir = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 		
-		if (GlobalPosition.DistanceTo(target) < 0.5f) // Increased epsilon for smoother pathing
-			_pathIndex++;
+		Vector2I centerCell = tileMap.LocalToMap(GlobalPosition);
+		Vector2I feetCell = tileMap.LocalToMap(GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT));
+		
+		bool onLadder = IsLadderTile(centerCell) || IsLadderTile(feetCell);
+		bool feetOnFloor = IsFloorTile(feetCell);
 
-		if (!IsCurrentlyOnLadder()) ApplyFloorSnap();
+		Vector2 velocity = Vector2.Zero;
+
+		if (inputDir.X != 0)
+		{
+			float moveStep = inputDir.X * MoveSpeed * (float)delta;
+			Vector2 nextPos = GlobalPosition + new Vector2(moveStep, 0);
+			
+			if (CanMoveTo(nextPos))
+			{
+				velocity.X = moveStep;
+			}
+			else if (CanMoveTo(nextPos + new Vector2(0, -TILE_SIZE)))
+			{
+				// Only auto-step up if we aren't actively trying to climb/descend
+				if (inputDir.Y == 0) 
+				{
+					velocity.X = moveStep;
+					velocity.Y = -TILE_SIZE; 
+				}
+			}
+		}
+
+		if (onLadder && inputDir.Y != 0)
+		{
+			float climbStep = inputDir.Y * ClimbSpeed * (float)delta;
+			Vector2 nextPos = GlobalPosition + new Vector2(0, climbStep);
+			Vector2I nextFeetCell = tileMap.LocalToMap(nextPos + new Vector2(0, HANK_HALF_HEIGHT));
+
+			if (inputDir.Y > 0) 
+			{
+				if (IsFloorTile(nextFeetCell))
+				{
+					velocity.Y = 0;
+					ApplyFloorSnap(); 
+				}
+				else
+				{
+					velocity.Y = climbStep;
+				}
+			}
+			else
+			{
+				if (CanMoveTo(nextPos))
+				{
+					velocity.Y = climbStep;
+				}
+			}
+		}
+
+		GlobalPosition += velocity;
+
+		if (!onLadder || (onLadder && inputDir.Y == 0 && feetOnFloor))
+		{
+			ApplyFloorSnap();
+			GD.Print("wallah");
+		}
+
 		hankPosition = GlobalPosition;
+	}
+
+	private bool CanMoveTo(Vector2 globalPos)
+	{
+		Vector2I cell = tileMap.LocalToMap(globalPos);
+		// Hank can move if the tile is background OR a ladder
+		return IsBackgroundTile(cell) || IsLadderTile(cell);
+	}
+
+	private void UpdateUI()
+	{
+		if(HankStats.Health > 0) deathscreen.Hide();
+		else deathscreen.Show();
 	}
 
 	private void ApplyFloorSnap()
 	{
 		Vector2 probePos = GlobalPosition + new Vector2(0, HANK_HALF_HEIGHT + 1f);
 		Vector2I cell = tileMap.LocalToMap(probePos);
+
+		// If falling through air
+		if (IsBackgroundTile(cell) && !IsLadderTile(cell))
+		{
+			GlobalPosition += new Vector2(0, 2f); // Simple gravity fall
+			return;
+		}
 
 		while (IsFloorTile(cell) && IsFloorTile(cell + Vector2I.Up)) cell += Vector2I.Up;
 
@@ -184,71 +209,17 @@ public partial class HankMovement : Node2D
 		}
 	}
 
-	private void OnBreakButtonPressed()
+	// --- INTERACTION ---
+
+	private void ProcessResourceCollection(Vector2I tile)
 	{
-		if (!_pendingBreakTile.HasValue) return;
 		HankStats.Hunger -= 5;
-		_targetBreakTile = _pendingBreakTile;
-		_breakButton.Visible = false;
-		
-		//Check if it is in the list of tiles #TODO
-		Vector2I tile = _pendingBreakTile.Value;
-		if (GenerateOres.stonePositions.Contains(tile))
-		{
-			GenerateOres.stonePositions.Remove(tile);
-			ResourceManager.stone++;
-		}
-		// Bronze
-		else if (GenerateOres.bronzePositions.Contains(tile))
-		{
-			GenerateOres.bronzePositions.Remove(tile);
-			ResourceManager.bronze++;
-		}
-		// Iron
-		else if (GenerateOres.ironPositions.Contains(tile))
-		{
-			GenerateOres.ironPositions.Remove(tile);
-			ResourceManager.iron++;
-		}
-		// Gunpowder
-		else if (GenerateOres.gunpowderPositions.Contains(tile))
-		{
-			GenerateOres.gunpowderPositions.Remove(tile);
-			ResourceManager.gunpowder++;
-		}
-		// Diamond
-		else if (GenerateOres.diamondPositions.Contains(tile))
-		{
-			GenerateOres.diamondPositions.Remove(tile);
-			ResourceManager.diamond++;
-		}
-		// Medpack
-		else if (GenerateOres.medpackPositions.Contains(tile))
-		{
-			GenerateOres.medpackPositions.Remove(tile);
-			ResourceManager.medkit++;
-		}
-
-		long startId = _astar.GetClosestPoint(GlobalPosition);
-		// Find the best walkable node adjacent to the block we want to break
-		float bestDist = float.MaxValue;
-		long bestEndId = -1;
-
-		foreach (var dir in new Vector2I[] { Vector2I.Left, Vector2I.Right, Vector2I.Up, Vector2I.Down })
-		{
-			Vector2I nCell = _targetBreakTile.Value + dir;
-			if (_cellToId.ContainsKey(nCell))
-			{
-				float d = GlobalPosition.DistanceTo(_astar.GetPointPosition(_cellToId[nCell]));
-				if (d < bestDist) { bestDist = d; bestEndId = _cellToId[nCell]; }
-			}
-		}
-
-		if (bestEndId != -1)
-		{
-			_currentPath = _astar.GetPointPath(startId, bestEndId);
-			_pathIndex = 0;
-		}
+		if (GenerateOres.stonePositions.Contains(tile)) { GenerateOres.stonePositions.Remove(tile); ResourceManager.stone++; }
+		else if (GenerateOres.bronzePositions.Contains(tile)) { GenerateOres.bronzePositions.Remove(tile); ResourceManager.bronze++; }
+		else if (GenerateOres.ironPositions.Contains(tile)) { GenerateOres.ironPositions.Remove(tile); ResourceManager.iron++; }
+		else if (GenerateOres.gunpowderPositions.Contains(tile)) { GenerateOres.gunpowderPositions.Remove(tile); ResourceManager.gunpowder++; }
+		else if (GenerateOres.diamondPositions.Contains(tile)) { GenerateOres.diamondPositions.Remove(tile); ResourceManager.diamond++; }
+		else if (GenerateOres.medpackPositions.Contains(tile)) { GenerateOres.medpackPositions.Remove(tile); ResourceManager.medkit++; }
 	}
 
 	private void PerformBreak()
@@ -263,7 +234,6 @@ public partial class HankMovement : Node2D
 		}
 
 		_targetBreakTile = null;
-		BuildGraph(); 
 	}
 
 	private void UpdateBackgroundAt(Vector2I cell, int sourceId)
@@ -283,28 +253,23 @@ public partial class HankMovement : Node2D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+		if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left)
 		{
-			Vector2 clickPos = GetGlobalMousePosition();
-			Vector2I cell = tileMap.LocalToMap(clickPos);
-
-			if (IsFloorTile(cell) && HankStats.Hunger > 0)
+			if (mouseEvent.Pressed)
 			{
-				_pendingBreakTile = cell;
-				_breakButton.GlobalPosition = tileMap.MapToLocal(cell) + new Vector2(-20, -25);
-				_breakButton.Visible = true;
-			}
-			else
-			{
-				_breakButton.Visible = false;
-				_targetBreakTile = null;
-				long startId = _astar.GetClosestPoint(GlobalPosition);
-				long endId = _astar.GetClosestPoint(clickPos);
-				if (_astar.HasPoint(startId) && _astar.HasPoint(endId))
+				Vector2I cell = tileMap.LocalToMap(GetGlobalMousePosition());
+				
+				if (IsFloorTile(cell) && HankStats.Hunger > 0)
 				{
-					_currentPath = _astar.GetPointPath(startId, endId);
-					_pathIndex = 0;
+					_isHolding = true;
+					_miningTile = cell;
+					_currentHoldTimer = 0f;
 				}
+			}
+			else // Mouse Released
+			{
+				_isHolding = false;
+				_currentHoldTimer = 0f;
 			}
 		}
 	}

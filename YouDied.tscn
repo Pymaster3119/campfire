@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dmuy8p6k1p0iv"]
+
+[node name="YouDied" type="Control" unique_id=828140071]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=132032502]
+layout_mode = 0
+offset_right = 1392.0
+offset_bottom = 818.0
+color = Color(0.84947944, 0, 0, 0.21960784)
+
+[node name="Label" type="Label" parent="." unique_id=1352630279]
+layout_mode = 0
+offset_right = 1154.0
+offset_bottom = 647.0
+theme_override_font_sizes/font_size = 68
+text = "YOU DIED!
+
+idiot"
+horizontal_alignment = 1
+vertical_alignment = 1

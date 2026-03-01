@@ -9,6 +9,8 @@ public partial class HoardGenerator : Node2D
 	public int zombNumber = 5;
 	[Export]
 	public PackedScene zombTemplate;
+	public static int zombDamage = 50;
+	public int hoardenumber = 0;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -20,6 +22,7 @@ public partial class HoardGenerator : Node2D
 		timer += delta;
 		if (timer >= hoardeTime)
 		{
+			hoardenumber ++;
 			//Spawn in dem zombs
 			for (int i = 0; i < zombNumber; i++)
 			{
@@ -32,7 +35,8 @@ public partial class HoardGenerator : Node2D
 			
 			//Update parmentiers
 			timer = 0;
-			zombNumber = zombNumber * zombNumber;
+			zombNumber = Math.Max(100, zombNumber * 2);
+			zombDamage = (int) (0.5f * hoardenumber * hoardenumber) + 50;
 		}
 	}
 }

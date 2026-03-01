@@ -14,7 +14,6 @@ public partial class HankStats : Node
 	private const float DecayHygiene       = 5f;
 	private const float DecayEducation     = 0f;
 	private const float DecayHunger        = 10f;
-	private const float DecayHealth        = 0f;
 
 	// ── Threshold tracking (prevent signal spam) ───────────────
 	private Dictionary<string, bool> _isCritical = new();
@@ -41,7 +40,6 @@ public partial class HankStats : Node
 		Hygiene       = Mathf.Clamp(Hygiene       - GetModifiedDecay("hygiene",       DecayHygiene)       * dt, 0f, 100f);
 		Education     = Mathf.Clamp(Education     - GetModifiedDecay("education",     DecayEducation)     * dt, 0f, 100f);
 		Hunger        = Mathf.Clamp(Hunger        - GetModifiedDecay("hunger",        DecayHunger)        * dt, 0f, 100f);
-		Health        = Mathf.Clamp(Health        - GetModifiedDecay("health",        DecayHealth)        * dt, 0f, 100f);
 
 		CheckTriggers();
 	}
