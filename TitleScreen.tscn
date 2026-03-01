@@ -16,3 +16,5 @@ stretch_mode = 1
 offset_right = 1152.0
 offset_bottom = 111.0
 text = "Hanks Game"
+horizontal_alignment = 1
+vertical_alignment = 1
