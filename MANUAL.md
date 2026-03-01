@@ -1,4 +1,4 @@
-# Campfire Game — Instruction Manual
+# Instruction Manual
 
 ## Controls
 
