@@ -277,8 +277,9 @@ text = "1"
 horizontal_alignment = 2
 
 [node name="Label2" type="Label" parent="Inventory/TextureRect11/Node2D" unique_id=1419078479]
-offset_right = 108.0
-offset_bottom = 23.0
+offset_top = -1.0
+offset_right = 110.0
+offset_bottom = 22.0
 scale = Vector2(0.1600017, 0.1600017)
 text = "Press Q to use"
 horizontal_alignment = 2
