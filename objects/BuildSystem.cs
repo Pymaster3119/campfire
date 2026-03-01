@@ -67,7 +67,7 @@ public partial class BuildSystem : Node2D
 		{
 			GD.Print("No tiles in storage!");
 			return;
-rr		}
+		}
 
 		_tileMap.SetCell(0, cell, 0, new Vector2I(0, 0));
 		GD.Print("Placed tile!");
