@@ -26,6 +26,11 @@ public partial class HankStats : Node
 
 	public override void _Ready()
 	{
+		Hygiene = 100f;
+		Education = 0f;
+		Hunger = 100f;
+		Health = 100f;
+
 		foreach (string s in new[]{"hygiene","entertainment","education","hunger","health"})
 		{
 			_isCritical[s] = false;
