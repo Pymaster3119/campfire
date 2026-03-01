@@ -199,9 +199,9 @@ public partial class HankMovement : Node2D
 				_yVelocity = 0f;
 				ApplyFloorSnap();
 
-				bool spaceNow = Input.IsKeyPressed(Key.Space);
+				bool spaceNow = Input.IsKeyPressed(Key.Space) || Input.IsKeyPressed(Key.W);
 				if (spaceNow && !_jumpPressed)
-					_yVelocity = -JumpForce;
+   					 _yVelocity = -JumpForce;
 				_jumpPressed = spaceNow;
 			}
 			else
