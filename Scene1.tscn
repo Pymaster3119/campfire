@@ -54,6 +54,10 @@ texture_region_size = Vector2i(8, 8)
 6:3/0 = 0
 7:3/0 = 0
 8:3/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+10:3/0 = 0
+9:3/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_vrojg"]
 tile_size = Vector2i(8, 8)
