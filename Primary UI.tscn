@@ -128,31 +128,10 @@ offset_right = 518.55225
 offset_bottom = -352.10446
 script = ExtResource("2_2y3mh")
 ProgressBarText = NodePath("../Label")
-attribute = "education"
+attribute = "hunger"
 
 [node name="Label" type="Label" parent="Hygene3" unique_id=1390739592]
 offset_left = 214.92537
-offset_top = -379.10446
-offset_right = 348.55225
-offset_bottom = -356.10446
-text = "Hygene"
-horizontal_alignment = 2
-
-[node name="Hygene4" type="Node2D" parent="." unique_id=40157456]
-position = Vector2(0, 30)
-scale = Vector2(0.335, 0.335)
-
-[node name="ProgressBar" type="ProgressBar" parent="Hygene4" unique_id=2115263534 node_paths=PackedStringArray("ProgressBarText")]
-offset_left = 352.2388
-offset_top = -379.10446
-offset_right = 518.55225
-offset_bottom = -352.10446
-script = ExtResource("2_2y3mh")
-ProgressBarText = NodePath("../Label")
-attribute = "hunger"
-
-[node name="Label" type="Label" parent="Hygene4" unique_id=794766827]
-offset_left = 220.89551
 offset_top = -379.10446
 offset_right = 348.55225
 offset_bottom = -356.10446
